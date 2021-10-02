@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClInclude Include="Block.h" />
     <ClInclude Include="Bullet.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Map.h" />

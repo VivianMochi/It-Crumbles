@@ -98,5 +98,8 @@
     <ClInclude Include="Entity.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Header Files\Basecode</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

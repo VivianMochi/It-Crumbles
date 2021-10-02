@@ -1,6 +1,7 @@
 #include "Block.h"
 
 #include "ResourceManager.h"
+#include "Constants.h"
 
 Block::Block(sf::Vector2i position, bool big, bool wall, int health) {
 	this->position = position;
@@ -20,10 +21,89 @@ Block::Block(sf::Vector2i position, bool big, bool wall, int health) {
 }
 
 void Block::update(sf::Time elapsed) {
+	// Update damage events
+	auto damageEvent = damageEvents.begin();
+	while (damageEvent != damageEvents.end()) {
+		damageEvent->delay -= elapsed.asSeconds();
+		if (damageEvent->delay <= 0) {
+			if (health > 0) {
+				health -= damageEvent->amount;
+				verticalVelocity = -20 - (std::rand() % 5);
+				if (health < 0) {
+					health = 0;
+				}
+				else if (health > maxHealth) {
+					health = maxHealth;
+				}
+			}
+			damageEvent = damageEvents.erase(damageEvent);
+		}
+		else {
+			damageEvent++;
+		}
+	}
 
+	// Update fall status
+	if (health <= 0) {
+		fallCounter += elapsed.asSeconds();
+	}
+	if (health <= 0 && fallCounter >= CRUMBLE_TIME && verticalPosition >= FALLEN_DEPTH) {
+		fallen = true;
+	}
+
+	// Update vertical
+	float desiredVerticalPosition = 0;
+	if (health <= 0 && fallCounter >= CRUMBLE_TIME) {
+		desiredVerticalPosition = FALLEN_DEPTH;
+		verticalVelocity += GRAVITY * elapsed.asSeconds();
+	}
+	else {
+		verticalVelocity += (desiredVerticalPosition - verticalPosition) * elapsed.asSeconds() * 300;
+		verticalVelocity = verticalVelocity * std::pow(0.01, elapsed.asSeconds());
+	}
+	verticalPosition += elapsed.asSeconds() * verticalVelocity;
+
+	// Update color
+	if (verticalPosition >= FALLEN_DEPTH) {
+		color.a = 0;
+	}
+	else if (verticalPosition >= 5) {
+		color.a = (FALLEN_DEPTH - verticalPosition) / 5 * 255;
+	}
+	else {
+		color.a = 255;
+	}
+
+	// Update sprite
+	int damageIndex = 0;
+	if (health <= 0) {
+		damageIndex = 3;
+	}
+	else if (health <= 0.25 * maxHealth) {
+		damageIndex = 2;
+	}
+	else if (health <= 0.5 * maxHealth) {
+		damageIndex = 1;
+	}
+	sprite.setTextureRect(sf::IntRect(damageIndex * size, 0, size, size + DEPTH_SIZE));
+	sprite.setColor(color);
 }
 
 void Block::draw(sf::RenderTarget &target, sf::RenderStates states) const {
-	states.transform.translate(sf::Vector2f(position * TILE_SIZE));
+	states.transform.translate(sf::Vector2f(position * TILE_SIZE) + sf::Vector2f(0, verticalPosition));
+	if (health <= 0 && fallCounter < CRUMBLE_TIME) {
+		states.transform.translate(0, std::rand() % 2 - 1);
+	}
 	target.draw(sprite, states);
+}
+
+sf::Vector2f Block::getCenter() const {
+	return sf::Vector2f(position * TILE_SIZE) + sf::Vector2f(size / 2, size / 2);
+}
+
+void Block::damage(float damage, float delay) {
+	damageEvent newEvent;
+	newEvent.amount = damage;
+	newEvent.delay = delay;
+	damageEvents.push_back(newEvent);
 }

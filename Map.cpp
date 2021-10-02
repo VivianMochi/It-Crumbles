@@ -5,7 +5,9 @@ bool blockSortFunction(Block &first, Block &second) {
 }
 
 void Map::update(sf::Time elapsed) {
-
+	for (Block &block : blocks) {
+		block.update(elapsed);
+	}
 }
 
 void Map::draw(sf::RenderTarget &target, sf::RenderStates states) const {
@@ -60,6 +62,18 @@ Block *Map::getBlockAt(sf::Vector2i position) {
 	return nullptr;
 }
 
+std::vector<Block*> Map::getBlocksWithinRadius(sf::Vector2f position, float radius) {
+	std::vector<Block*> output;
+	for (Block &block : blocks) {
+		float xOffset = block.getCenter().x - position.x;
+		float yOffset = block.getCenter().y - position.y;
+		if (std::sqrt(xOffset * xOffset + yOffset * yOffset) <= radius) {
+			output.push_back(&block);
+		}
+	}
+	return output;
+}
+
 bool Map::isAreaEmpty(sf::Vector2i position, sf::Vector2i size) {
 	for (int y = position.y; y < position.y + size.y; y++) {
 		for (int x = position.x; x < position.x + size.x; x++) {
@@ -69,4 +83,15 @@ bool Map::isAreaEmpty(sf::Vector2i position, sf::Vector2i size) {
 		}
 	}
 	return true;
+}
+
+void Map::createExplosion(sf::Vector2f position, float damage, float radius) {
+	float rippleSpeed = 150;
+
+	for (Block *block : getBlocksWithinRadius(position, radius)) {
+		float xOffset = block->getCenter().x - position.x;
+		float yOffset = block->getCenter().y - position.y;
+		float distance = std::sqrt(xOffset * xOffset + yOffset * yOffset);
+		block->damage(damage, distance / rippleSpeed);
+	}
 }
