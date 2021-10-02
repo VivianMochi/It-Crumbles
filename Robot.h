@@ -11,7 +11,11 @@ public:
 
 	// Stats
 	float moveSpeed = 80;
-	float acceleration = 15;
+	float groundAcceleration = 15;
+	float airAcceleration = 1;
+
+	float bombMaxCooldown = 2;
+	float bombCooldown = 0;
 
 	sf::Sprite sprite;
 };

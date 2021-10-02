@@ -84,6 +84,9 @@
     <ClCompile Include="Brain.cpp">
       <Filter>Source Files\Brains</Filter>
     </ClCompile>
+    <ClCompile Include="Bomb.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -127,6 +130,9 @@
     </ClInclude>
     <ClInclude Include="Helpers.h">
       <Filter>Header Files\Basecode</Filter>
+    </ClInclude>
+    <ClInclude Include="Bomb.h">
+      <Filter>Header Files\Objects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

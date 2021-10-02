@@ -1,5 +1,7 @@
 #include "Map.h"
 
+#include "Helpers.h"
+
 bool blockSortFunction(Block &first, Block &second) {
 	return first.position.y < second.position.y;
 }
@@ -147,9 +149,7 @@ std::vector<Block*> Map::getBlocksWithinBox(sf::Vector2i position, sf::Vector2i 
 std::vector<Block*> Map::getBlocksWithinRadius(sf::Vector2f position, float radius) {
 	std::vector<Block*> output;
 	for (Block &block : blocks) {
-		float xOffset = block.getCenter().x - position.x;
-		float yOffset = block.getCenter().y - position.y;
-		if (std::sqrt(xOffset * xOffset + yOffset * yOffset) <= radius) {
+		if (vm::magnitude(block.getCenter() - position) <= radius) {
 			output.push_back(&block);
 		}
 	}
@@ -188,9 +188,15 @@ void Map::createExplosion(sf::Vector2f position, float damage, float radius) {
 	float rippleSpeed = 150;
 
 	for (Block *block : getBlocksWithinRadius(position, radius)) {
-		float xOffset = block->getCenter().x - position.x;
-		float yOffset = block->getCenter().y - position.y;
-		float distance = std::sqrt(xOffset * xOffset + yOffset * yOffset);
+		float distance = vm::magnitude(block->getCenter() - position);
 		block->damage(damage, distance / rippleSpeed);
+	}
+
+	for (auto &entity : entities) {
+		if (vm::magnitude(entity->getPosition() - position) <= radius) {
+			sf::Vector2f direction = vm::normalize(entity->getPosition() - position);
+			entity->velocity = direction * 100.0f;
+			entity->verticalVelocity = -40 - std::rand() % 5;
+		}
 	}
 }

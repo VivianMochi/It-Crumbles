@@ -23,8 +23,12 @@ Bullet::Bullet(sf::Vector2f position, sf::Vector2f velocity, float damage, bool 
 void Bullet::update(sf::Time elapsed) {
 	flightTime -= elapsed.asSeconds();
 	if (flightTime > 0) {
-		verticalPosition = -4;
-		verticalVelocity = 0;
+		if (verticalPosition > -4) {
+			verticalPosition = -4;
+		}
+		if (verticalVelocity > 0) {
+			verticalVelocity = 0;
+		}
 	}
 
 	// Simplification of Entity::update()
@@ -37,10 +41,12 @@ void Bullet::update(sf::Time elapsed) {
 	move(velocity * elapsed.asSeconds());
 
 	// Collide with wall
-	Block *wallCollision = map->getBlockAt(getPosition());
-	if (wallCollision && wallCollision->isBlocking()) {
-		dead = true;
-		wallCollision->damage(damage);
+	if (verticalPosition >= -WALL_HEIGHT * 2) {
+		Block *wallCollision = map->getBlockAt(getPosition());
+		if (wallCollision && wallCollision->isBlocking()) {
+			dead = true;
+			wallCollision->damage(damage);
+		}
 	}
 
 	// Collide with floor

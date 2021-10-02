@@ -2,17 +2,20 @@
 
 #include "Entity.h"
 
-class Bullet : public Entity {
+class Bomb : public Entity {
 public:
-	Bullet(sf::Vector2f position, sf::Vector2f velocity, float damage = 1, bool evil = true);
+	Bomb(sf::Vector2f position, sf::Vector2f velocity, float damage = 8, float radius = 30, bool evil = true);
 
 	virtual void update(sf::Time elapsed) override;
 	virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
 	// Data
-	float damage = 1;
+	float damage = 8;
+	float radius = 30;
 	bool evil = true;
-	float flightTime = 0.5;
+	float fuseTime = 3;
+
+	float flashCounter = 0;
 
 	sf::CircleShape sprite;
 };

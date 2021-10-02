@@ -44,23 +44,29 @@ void Entity::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 }
 
 void Entity::moveWithCollision(sf::Vector2f delta) {
-	sf::Vector2f hitboxPosition = sf::Vector2f(getPosition().x - size.x / 2, getPosition().y - size.x / 4);
-	sf::Vector2f hitboxSize = sf::Vector2f(size.x, size.x / 2);
-
-	// Do x
-	if (!map->checkBoxCollision(hitboxPosition + sf::Vector2f(delta.x, 0), hitboxSize)) {
-		move(delta.x, 0);
+	// If high enough, ignore collisions
+	if (verticalPosition < -WALL_HEIGHT * 2) {
+		move(delta);
 	}
 	else {
-		velocity.x = 0;
-	}
+		sf::Vector2f hitboxPosition = sf::Vector2f(getPosition().x - size.x / 2, getPosition().y - size.x / 4);
+		sf::Vector2f hitboxSize = sf::Vector2f(size.x, size.x / 2);
 
-	// Do y
-	if (!map->checkBoxCollision(hitboxPosition + sf::Vector2f(0, delta.y), hitboxSize)) {
-		move(0, delta.y);
-	}
-	else {
-		velocity.y = 0;
+		// Do x
+		if (!map->checkBoxCollision(hitboxPosition + sf::Vector2f(delta.x, 0), hitboxSize)) {
+			move(delta.x, 0);
+		}
+		else {
+			velocity.x = 0;
+		}
+
+		// Do y
+		if (!map->checkBoxCollision(hitboxPosition + sf::Vector2f(0, delta.y), hitboxSize)) {
+			move(0, delta.y);
+		}
+		else {
+			velocity.y = 0;
+		}
 	}
 }
 

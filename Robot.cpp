@@ -2,6 +2,7 @@
 
 #include "Map.h"
 #include "Bullet.h"
+#include "Bomb.h"
 #include "Helpers.h"
 
 Robot::Robot() {
@@ -9,8 +10,12 @@ Robot::Robot() {
 }
 
 void Robot::update(sf::Time elapsed) {
+	// Tick cooldowns
+	bombCooldown -= elapsed.asSeconds();
+
+	// Control
 	sf::Vector2f desiredVelocity = moveDirection * moveSpeed;
-	velocity += (desiredVelocity - velocity) * elapsed.asSeconds() * acceleration;
+	velocity += (desiredVelocity - velocity) * elapsed.asSeconds() * (verticalPosition == 0 ? groundAcceleration : airAcceleration);
 
 	if (dodgeControl && verticalPosition == 0) {
 		verticalVelocity = -25;
@@ -19,6 +24,12 @@ void Robot::update(sf::Time elapsed) {
 	if (fireControl && std::rand() % 2 == 0) {
 		sf::Vector2f bulletVelocity = vm::rotate(vm::normalize(aimDirection) * 100.0f, std::rand() % 101 / 100.0f * 0.5 - 0.25) + velocity;
 		map->addEntity(std::make_shared<Bullet>(getPosition(), bulletVelocity, 3, false));
+	}
+
+	if (bombControl && bombCooldown <= 0) {
+		bombCooldown = bombMaxCooldown;
+		sf::Vector2f bombVelocity = aimDirection;
+		map->addEntity(std::make_shared<Bomb>(getPosition(), bombVelocity, 8, 30, false));
 	}
 
 	Entity::update(elapsed);
