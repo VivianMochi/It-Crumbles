@@ -16,6 +16,7 @@ public:
 
 	// Map helpers
 	Block *getBlockAt(sf::Vector2i position);
+	std::vector<Block*> getBlocksWithinBox(sf::Vector2i position, sf::Vector2i size);
 	std::vector<Block*> getBlocksWithinRadius(sf::Vector2f position, float radius);
 	bool isAreaEmpty(sf::Vector2i position, sf::Vector2i size = sf::Vector2i(2, 2));
 

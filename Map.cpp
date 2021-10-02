@@ -20,6 +20,7 @@ void Map::generateMap() {
 	sf::Vector2i mapSize = { 40, 40 };
 
 	float bigBlockRate = 0.8;
+	float wallRate = 0.5;
 
 	// Generate big blocks
 	for (int tries = mapSize.x * mapSize.y / 4 * bigBlockRate; tries > 0; tries--) {
@@ -35,6 +36,21 @@ void Map::generateMap() {
 			if (!getBlockAt(sf::Vector2i(x, y))) {
 				blocks.emplace_back(sf::Vector2i(x, y));
 			}
+		}
+	}
+
+	// Make walls
+	for (int walls = (mapSize.x + mapSize.y) / 2 * wallRate; walls > 0; walls--) {
+		sf::Vector2i size = sf::Vector2i(std::rand() % ((mapSize.x + mapSize.y) / 4) + 5, std::rand() % 3 + 1);
+		if (std::rand() % 2) {
+			std::swap(size.x, size.y);
+		}
+		sf::Vector2i position = sf::Vector2i(std::rand() % (mapSize.x - size.x + 1), std::rand() % (mapSize.y - size.y + 1));
+
+		for (Block *block : getBlocksWithinBox(position, size)) {
+			block->wall = true;
+			block->verticalPosition = -WALL_HEIGHT;
+			block->color = sf::Color(150, 150, 150);
 		}
 	}
 
@@ -60,6 +76,19 @@ Block *Map::getBlockAt(sf::Vector2i position) {
 		}
 	}
 	return nullptr;
+}
+
+std::vector<Block*> Map::getBlocksWithinBox(sf::Vector2i position, sf::Vector2i size) {
+	std::vector<Block*> output;
+	for (int y = position.y; y < position.y + size.y; y++) {
+		for (int x = position.x; x < position.x + size.x; x++) {
+			Block *block = getBlockAt(sf::Vector2i(x, y));
+			if (block && std::find(output.begin(), output.end(), block) == output.end()) {
+				output.push_back(block);
+			}
+		}
+	}
+	return output;
 }
 
 std::vector<Block*> Map::getBlocksWithinRadius(sf::Vector2f position, float radius) {

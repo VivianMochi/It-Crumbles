@@ -53,6 +53,9 @@ void Block::update(sf::Time elapsed) {
 
 	// Update vertical
 	float desiredVerticalPosition = 0;
+	if (wall) {
+		desiredVerticalPosition = -WALL_HEIGHT;
+	}
 	if (health <= 0 && fallCounter >= CRUMBLE_TIME) {
 		desiredVerticalPosition = FALLEN_DEPTH;
 		verticalVelocity += GRAVITY * elapsed.asSeconds();

@@ -19,6 +19,11 @@ void TowerState::gotEvent(sf::Event event) {
 			floors[currentFloor].createExplosion(getGame()->getCursorPosition() + cameraPosition, 5, 40);
 		}
 	}
+	else if (event.type == sf::Event::KeyPressed) {
+		if (event.key.code == sf::Keyboard::Space) {
+			getGame()->changeState(new TowerState());
+		}
+	}
 }
 
 void TowerState::update(sf::Time elapsed) {
@@ -30,16 +35,16 @@ void TowerState::update(sf::Time elapsed) {
 
 	// Update camera
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-		cameraPosition.x -= elapsed.asSeconds() * 60;
+		cameraPosition.x -= elapsed.asSeconds() * 100;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-		cameraPosition.x += elapsed.asSeconds() * 60;
+		cameraPosition.x += elapsed.asSeconds() * 100;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-		cameraPosition.y -= elapsed.asSeconds() * 60;
+		cameraPosition.y -= elapsed.asSeconds() * 100;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-		cameraPosition.y += elapsed.asSeconds() * 60;
+		cameraPosition.y += elapsed.asSeconds() * 100;
 	}
 }
 
