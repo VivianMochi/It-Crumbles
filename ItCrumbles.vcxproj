@@ -140,11 +140,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="Brain.cpp" />
     <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="EnemyBrain.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="PlayerBrain.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Robot.cpp" />
     <ClCompile Include="State.cpp" />
@@ -152,11 +155,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h" />
+    <ClInclude Include="Brain.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="EnemyBrain.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Helpers.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="PlayerBrain.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Robot.h" />
     <ClInclude Include="State.h" />

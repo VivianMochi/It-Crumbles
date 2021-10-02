@@ -37,6 +37,12 @@
     <Filter Include="Header Files\World">
       <UniqueIdentifier>{19088494-a41a-4ee0-b190-74ffb130805f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Brains">
+      <UniqueIdentifier>{33ad2db0-a5f0-4955-875d-9d340a8bedd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Brains">
+      <UniqueIdentifier>{f4ad27b9-1711-4cfd-aef3-4aeccec7a1e1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Robot.cpp">
@@ -69,6 +75,15 @@
     <ClCompile Include="State.cpp">
       <Filter>Source Files\Basecode</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerBrain.cpp">
+      <Filter>Source Files\Brains</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyBrain.cpp">
+      <Filter>Source Files\Brains</Filter>
+    </ClCompile>
+    <ClCompile Include="Brain.cpp">
+      <Filter>Source Files\Brains</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -99,6 +114,18 @@
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
     <ClInclude Include="Constants.h">
+      <Filter>Header Files\Basecode</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerBrain.h">
+      <Filter>Header Files\Brains</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyBrain.h">
+      <Filter>Header Files\Brains</Filter>
+    </ClInclude>
+    <ClInclude Include="Brain.h">
+      <Filter>Header Files\Brains</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers.h">
       <Filter>Header Files\Basecode</Filter>
     </ClInclude>
   </ItemGroup>

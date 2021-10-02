@@ -4,15 +4,32 @@ bool blockSortFunction(Block &first, Block &second) {
 	return first.position.y < second.position.y;
 }
 
+bool entitySortFunction(std::shared_ptr<Entity> &first, std::shared_ptr<Entity> &second) {
+	return first->getPosition().y < second->getPosition().y;
+}
+
 void Map::update(sf::Time elapsed) {
 	for (Block &block : blocks) {
 		block.update(elapsed);
 	}
+
+	for (std::shared_ptr<Entity> &entity: entities) {
+		entity->updateBrain(elapsed);
+		entity->update(elapsed);
+		entity->updatePosition(elapsed, this);
+	}
+
+	// Order the entities by their y positions
+	std::sort(entities.begin(), entities.end(), entitySortFunction);
 }
 
 void Map::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 	for (const Block &block : blocks) {
 		target.draw(block, states);
+	}
+
+	for (const std::shared_ptr<Entity> &entity : entities) {
+		target.draw(*entity, states);
 	}
 }
 
@@ -78,6 +95,10 @@ Block *Map::getBlockAt(sf::Vector2i position) {
 	return nullptr;
 }
 
+Block *Map::getBlockAt(sf::Vector2f position) {
+	return getBlockAt(sf::Vector2i(position.x / TILE_SIZE, position.y / TILE_SIZE));
+}
+
 std::vector<Block*> Map::getBlocksWithinBox(sf::Vector2i position, sf::Vector2i size) {
 	std::vector<Block*> output;
 	for (int y = position.y; y < position.y + size.y; y++) {
@@ -112,6 +133,18 @@ bool Map::isAreaEmpty(sf::Vector2i position, sf::Vector2i size) {
 		}
 	}
 	return true;
+}
+
+bool Map::checkBoxCollision(sf::Vector2f position, sf::Vector2f size) {
+	sf::FloatRect testBox(position, size);
+	for (Block &block : blocks) {
+		if (block.wall && block.verticalPosition <= WALL_HEIGHT / 2) {
+			if (testBox.intersects(sf::FloatRect(sf::Vector2f(block.position * TILE_SIZE), sf::Vector2f(block.size, block.size)))) {
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 void Map::createExplosion(sf::Vector2f position, float damage, float radius) {

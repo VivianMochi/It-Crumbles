@@ -82,10 +82,10 @@ void Block::update(sf::Time elapsed) {
 	if (health <= 0) {
 		damageIndex = 3;
 	}
-	else if (health <= 0.25 * maxHealth) {
+	else if (health <= 0.35 * maxHealth) {
 		damageIndex = 2;
 	}
-	else if (health <= 0.5 * maxHealth) {
+	else if (health <= 0.75 * maxHealth) {
 		damageIndex = 1;
 	}
 	sprite.setTextureRect(sf::IntRect(damageIndex * size, 0, size, size + DEPTH_SIZE));

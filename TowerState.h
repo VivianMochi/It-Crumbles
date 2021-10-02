@@ -17,5 +17,7 @@ public:
 
 	int currentFloor = 0;
 	std::vector<Map> floors;
+
+	std::shared_ptr<Robot> robot;
 };
 
