@@ -35,7 +35,7 @@ void TowerState::gotEvent(sf::Event event) {
 
 void TowerState::update(sf::Time elapsed) {
 	// Give the robot an aim direction
-	robot->aimDirection = vm::normalize(getGame()->getCursorPosition() + cameraPosition - robot->getPosition());
+	robot->aimDirection = getGame()->getCursorPosition() + cameraPosition - robot->getPosition();
 
 	// Update floors
 	// Todo: maybe only update current floor?

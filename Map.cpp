@@ -24,12 +24,29 @@ void Map::update(sf::Time elapsed) {
 }
 
 void Map::draw(sf::RenderTarget &target, sf::RenderStates states) const {
-	for (const Block &block : blocks) {
-		target.draw(block, states);
+	auto currentBlock = blocks.begin();
+	auto currentEntity = entities.begin();
+
+	// Render everything in y order
+	while (currentBlock != blocks.end() && currentEntity != entities.end()) {
+		if (currentBlock->getBack().y <= (*currentEntity)->getPosition().y) {
+			target.draw(*currentBlock, states);
+			currentBlock++;
+		}
+		else {
+			target.draw(**currentEntity, states);
+			currentEntity++;
+		}
 	}
 
-	for (const std::shared_ptr<Entity> &entity : entities) {
-		target.draw(*entity, states);
+	// Render any leftovers
+	while (currentBlock != blocks.end()) {
+		target.draw(*currentBlock, states);
+		currentBlock++;
+	}
+	while (currentEntity != entities.end()) {
+		target.draw(**currentEntity, states);
+		currentEntity++;
 	}
 }
 

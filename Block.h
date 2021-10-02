@@ -23,6 +23,7 @@ public:
 
 	// Helpers
 	sf::Vector2f getCenter() const;
+	sf::Vector2f getBack() const;
 
 	// Interaction
 	void damage(float damage, float delay = 0);

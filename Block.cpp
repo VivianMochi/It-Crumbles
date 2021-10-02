@@ -104,6 +104,10 @@ sf::Vector2f Block::getCenter() const {
 	return sf::Vector2f(position * TILE_SIZE) + sf::Vector2f(size / 2, size / 2);
 }
 
+sf::Vector2f Block::getBack() const {
+	return sf::Vector2f(position * TILE_SIZE) + sf::Vector2f(size / 2, 0);
+}
+
 void Block::damage(float damage, float delay) {
 	damageEvent newEvent;
 	newEvent.amount = damage;
