@@ -3,6 +3,10 @@
 #include "Entity.h"
 #include "Helpers.h"
 
+PlayerBrain::PlayerBrain() {
+	enemy = false;
+}
+
 void PlayerBrain::update(sf::Time elapsed) {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
 		entity->moveDirection.x = -1;

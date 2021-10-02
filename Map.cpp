@@ -9,15 +9,30 @@ bool entitySortFunction(std::shared_ptr<Entity> &first, std::shared_ptr<Entity> 
 }
 
 void Map::update(sf::Time elapsed) {
+	// Update blocks
 	for (Block &block : blocks) {
 		block.update(elapsed);
 	}
 
-	for (std::shared_ptr<Entity> &entity: entities) {
-		entity->updateBrain(elapsed);
-		entity->update(elapsed);
-		entity->updatePosition(elapsed, this);
+	// Update entities
+	auto entity = entities.begin();
+	while (entity != entities.end()) {
+		(*entity)->updateBrain(elapsed);
+		(*entity)->update(elapsed);
+
+		if ((*entity)->dead) {
+			entity = entities.erase(entity);
+		}
+		else {
+			entity++;
+		}
 	}
+
+	// Add any new entities
+	for (std::shared_ptr<Entity> &entity : entitiesToAdd) {
+		entities.push_back(entity);
+	}
+	entitiesToAdd.clear();
 
 	// Order the entities by their y positions
 	std::sort(entities.begin(), entities.end(), entitySortFunction);
@@ -155,13 +170,18 @@ bool Map::isAreaEmpty(sf::Vector2i position, sf::Vector2i size) {
 bool Map::checkBoxCollision(sf::Vector2f position, sf::Vector2f size) {
 	sf::FloatRect testBox(position, size);
 	for (Block &block : blocks) {
-		if (block.wall && block.verticalPosition <= WALL_HEIGHT / 2) {
+		if (block.isBlocking()) {
 			if (testBox.intersects(sf::FloatRect(sf::Vector2f(block.position * TILE_SIZE), sf::Vector2f(block.size, block.size)))) {
 				return true;
 			}
 		}
 	}
 	return false;
+}
+
+void Map::addEntity(std::shared_ptr<Entity> entity) {
+	entitiesToAdd.push_back(entity);
+	entity->map = this;
 }
 
 void Map::createExplosion(sf::Vector2f position, float damage, float radius) {

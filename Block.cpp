@@ -28,7 +28,7 @@ void Block::update(sf::Time elapsed) {
 		if (damageEvent->delay <= 0) {
 			if (health > 0) {
 				health -= damageEvent->amount;
-				verticalVelocity = -20 - (std::rand() % 5);
+				verticalVelocity = 20 + (std::rand() % 5);
 				if (health < 0) {
 					health = 0;
 				}
@@ -106,6 +106,10 @@ sf::Vector2f Block::getCenter() const {
 
 sf::Vector2f Block::getBack() const {
 	return sf::Vector2f(position * TILE_SIZE) + sf::Vector2f(size / 2, 0);
+}
+
+bool Block::isBlocking() const {
+	return wall && verticalPosition <= WALL_HEIGHT / 2;
 }
 
 void Block::damage(float damage, float delay) {

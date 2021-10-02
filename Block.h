@@ -25,6 +25,9 @@ public:
 	sf::Vector2f getCenter() const;
 	sf::Vector2f getBack() const;
 
+	// Checks
+	bool isBlocking() const;
+
 	// Interaction
 	void damage(float damage, float delay = 0);
 

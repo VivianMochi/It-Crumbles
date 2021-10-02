@@ -26,10 +26,12 @@ public:
 	bool checkBoxCollision(sf::Vector2f position, sf::Vector2f size);
 
 	// Interaction
+	void addEntity(std::shared_ptr<Entity> entity);
 	void createExplosion(sf::Vector2f position, float damage, float radius);
 
 	std::vector<Block> blocks;
 	std::vector<std::shared_ptr<Entity>> entities;
+	std::vector<std::shared_ptr<Entity>> entitiesToAdd;
 
 private:
 

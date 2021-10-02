@@ -11,15 +11,19 @@ public:
 	void updateBrain(sf::Time elapsed);
 	virtual void update(sf::Time elapsed);
 	virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
-	void updatePosition(sf::Time elapsed, Map *map);
+	void moveWithCollision(sf::Vector2f delta);
 
 	void installBrain(std::shared_ptr<Brain> brain);
+
+	// References
+	Map *map;
 
 	// Data
 	sf::Vector2f size;
 	sf::Vector2f velocity;
 	float verticalPosition = 0;
 	float verticalVelocity = 0;
+	bool dead = false;
 
 	// Brain socket
 	std::shared_ptr<Brain> brain;

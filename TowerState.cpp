@@ -16,13 +16,13 @@ void TowerState::init() {
 
 	robot = std::make_shared<Robot>();
 	robot->installBrain(std::make_shared<PlayerBrain>());
-	floors[0].entities.push_back(robot);
+	floors[0].addEntity(robot);
 }
 
 void TowerState::gotEvent(sf::Event event) {
 	if (event.type == sf::Event::MouseButtonPressed) {
 		if (event.mouseButton.button == sf::Mouse::Left) {
-			floors[currentFloor].createExplosion(getGame()->getCursorPosition() + cameraPosition, 5, 40);
+			//floors[currentFloor].createExplosion(getGame()->getCursorPosition() + cameraPosition, 5, 40);
 			//floors[currentFloor].getBlockAt(getGame()->getCursorPosition() + cameraPosition)->damage(1);
 		}
 	}
