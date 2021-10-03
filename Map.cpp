@@ -200,6 +200,7 @@ void Map::createExplosion(sf::Vector2f position, float damage, float radius) {
 			sf::Vector2f direction = vm::normalize(entity->getPosition() - position);
 			entity->velocity = direction * 100.0f;
 			entity->verticalVelocity = -40 - std::rand() % 5;
+			entity->rocketTime = 1;
 		}
 	}
 

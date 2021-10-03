@@ -1,6 +1,6 @@
 #include "Smoke.h"
 
-Smoke::Smoke(sf::Vector2f position, sf::Vector2f velocity, float radius, float lifespan, float verticalPosition, sf::Color color) {
+Smoke::Smoke(sf::Vector2f position, sf::Vector2f velocity, float radius, float lifespan, float verticalPosition, sf::Color color, bool grow) {
 	setPosition(position);
 	this->velocity = velocity;
 	this->radius = radius;
@@ -9,7 +9,12 @@ Smoke::Smoke(sf::Vector2f position, sf::Vector2f velocity, float radius, float l
 	this->verticalPosition = verticalPosition;
 	this->color = color;
 
-	sprite.setRadius(radius / 4.0f);
+	if (grow) {
+		sprite.setRadius(radius / 4.0f);
+	}
+	else {
+		sprite.setRadius(radius);
+	}
 	sprite.setOrigin(sprite.getRadius(), sprite.getRadius() * 2);
 	sprite.setFillColor(color);
 	sprite.setPosition(std::round(getPosition().x), std::round(getPosition().y + verticalPosition));

@@ -15,6 +15,9 @@ public:
 
 	void installBrain(std::shared_ptr<Brain> brain);
 
+	// Checks
+	bool isRocketing() const;
+
 	// References
 	Map *map;
 
@@ -24,6 +27,8 @@ public:
 	float verticalPosition = 0;
 	float verticalVelocity = 0;
 	bool dead = false;
+	float rocketTime = 0;
+	float rocketSmokeCooldown = 0;
 
 	// Brain socket
 	std::shared_ptr<Brain> brain;

@@ -4,13 +4,13 @@
 #include "Helpers.h"
 #include "Constants.h"
 
-Bullet::Bullet(sf::Vector2f position, sf::Vector2f velocity, float damage, bool evil) {
+Bullet::Bullet(sf::Vector2f position, sf::Vector2f velocity, float damage, bool evil, float verticalOffset) {
 	setPosition(position);
 	this->velocity = velocity;
 	this->damage = damage;
 	this->evil = evil;
 	size = sf::Vector2f(2, 2);
-	verticalPosition = -4;
+	verticalPosition = -4 + verticalOffset;
 
 	sprite.setRadius(2);
 	sprite.setOrigin(sprite.getRadius(), sprite.getRadius());
