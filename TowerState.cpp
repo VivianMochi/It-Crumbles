@@ -4,6 +4,7 @@
 #include "ResourceManager.h"
 #include "Constants.h"
 #include "Stats.h"
+#include "MessageState.h"
 
 TowerState::TowerState() {
 
@@ -120,10 +121,11 @@ void TowerState::changeFloor(int floor) {
 	bool upward = floor > currentFloor;
 	if (floor < 0) {
 		floor = 0;
-		getGame()->changeState(new TowerState());
+		getGame()->changeState(new MessageState("Death"));
 	}
 	else if (floor >= floors.size()) {
 		floor = floors.size() - 1;
+		getGame()->changeState(new MessageState("Victory with " + std::to_string(tokens) + " Tokens"));
 	}
 	currentFloor = floor;
 
