@@ -40,6 +40,6 @@ public:
 	BitmapText tokenText;
 	std::vector<Notification> notifications;
 
-	sf::Music music;
+	std::vector<std::shared_ptr<sf::Music>> music;
 };
 

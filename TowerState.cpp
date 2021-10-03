@@ -47,10 +47,13 @@ void TowerState::init() {
 
 	cameraPosition = robot->getPosition() - sf::Vector2f(getGame()->gameSize / 2);
 
-	music.openFromFile("Resource/Music/TowerOfTheAncients.ogg");
-	music.setLoop(true);
-	music.setVolume(25);
-	music.play();
+	for (int i = 0; i < 6; i++) {
+		music.push_back(std::make_shared<sf::Music>());
+		music.back()->openFromFile("Resource/Music/TowerOfTheAncients" + std::to_string(i) + ".ogg");
+		music.back()->setLoop(true);
+		music.back()->setVolume(0);
+		music.back()->play();
+	}
 }
 
 void TowerState::gotEvent(sf::Event event) {
@@ -102,6 +105,15 @@ void TowerState::update(sf::Time elapsed) {
 	// Update camera
 	sf::Vector2f desiredCameraPosition = (robot->getPosition() + robot->getPosition() + (getGame()->getCursorPosition() + cameraPosition)) / 3.0f - sf::Vector2f(getGame()->gameSize / 2);
 	cameraPosition += (desiredCameraPosition - cameraPosition) * elapsed.asSeconds() * 10.0f;
+
+	// Update music
+	for (int i = 0; i < 6; i++) {
+		float desiredVolume = 0;
+		if (currentFloor >= i) {
+			desiredVolume = 25;
+		}
+		music[i]->setVolume(music[i]->getVolume() + (desiredVolume - music[i]->getVolume()) * elapsed.asSeconds() * 2);
+	}
 }
 
 void TowerState::render(sf::RenderWindow &window) {
