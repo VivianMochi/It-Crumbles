@@ -37,6 +37,9 @@ public:
 	void createDust(sf::Vector2f position, sf::Vector2f direction);
 	void createSplash(sf::Vector2f position, float radius, sf::Color color = sf::Color::Transparent, float fullness = 1);
 
+	float spawnRate = 10;
+	float spawnTimer = 0;
+
 	std::vector<Block> blocks;
 	std::vector<std::shared_ptr<Entity>> entities;
 	std::vector<std::shared_ptr<Entity>> entitiesToAdd;

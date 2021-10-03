@@ -172,6 +172,13 @@ void Entity::installBrain(std::shared_ptr<Brain> brain) {
 	this->brain->entity = this;
 }
 
+void Entity::plummet() {
+	velocity = sf::Vector2f(0, 1);
+	verticalPosition = CEILING_HEIGHT;
+	verticalVelocity = 80;
+	rocketTime = 10;
+}
+
 sf::FloatRect Entity::getFloorHitbox() {
 	sf::Vector2f hitboxSize = sf::Vector2f(size.x, size.x / 2);
 	if (hitboxSize.x < 2) {

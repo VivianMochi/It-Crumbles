@@ -18,6 +18,7 @@ public:
 	// Construction
 	void setMaxHealth(int maxHealth);
 	void installBrain(std::shared_ptr<Brain> brain);
+	void plummet();
 
 	// Helpers
 	sf::FloatRect getFloorHitbox();

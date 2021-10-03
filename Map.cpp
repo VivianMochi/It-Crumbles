@@ -15,6 +15,20 @@ bool entitySortFunction(std::shared_ptr<Entity> &first, std::shared_ptr<Entity> 
 }
 
 void Map::update(sf::Time elapsed) {
+	// Update spawn
+	spawnTimer += elapsed.asSeconds();
+	if (spawnTimer >= spawnRate) {
+		spawnTimer = 0;
+		spawnRate -= 0.5;
+		if (spawnRate < 1) {
+			spawnRate = 1;
+		}
+		std::shared_ptr<Slime> slime = std::make_shared<Slime>(getEmptySpot());
+		slime->installBrain(std::make_shared<EnemyBrain>());
+		slime->plummet();
+		addEntity(slime);
+	}
+
 	// Update blocks
 	for (Block &block : blocks) {
 		block.update(elapsed);
@@ -74,8 +88,8 @@ void Map::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 
 sf::Vector2i Map::generateMap(sf::Vector2i lowerLauncherPosition, float difficulty) {
 	float bigBlockRate = 0.8 - difficulty / 6.0f;
-	float wallRate = 0.1 * difficulty;
-	float enemyRate = 0.2 * difficulty;
+	float wallRate = 0.2 + 0.1 * difficulty;
+	float enemyRate = 0.4 + 0.2 * difficulty;
 	float damageRate = 0.2 * difficulty;
 	if (difficulty == 5) {
 		bigBlockRate = 0.1;
@@ -112,6 +126,23 @@ sf::Vector2i Map::generateMap(sf::Vector2i lowerLauncherPosition, float difficul
 			if (!getBlockAt(sf::Vector2i(x, y))) {
 				blocks.emplace_back(sf::Vector2i(x, y));
 				blocks.back().color = floorColors[difficulty];
+			}
+		}
+	}
+
+	// Make immune walls on lower floors
+	if (difficulty <= 2) {
+		for (int y = 0; y < MAP_SIZE.y; y++) {
+			for (int x = 0; x < MAP_SIZE.x; x++) {
+				if (x == 0 || x == MAP_SIZE.x - 1 || y == 0 || y == MAP_SIZE.y - 1) {
+					Block *block = getBlockAt(sf::Vector2i(x, y));
+					if (block && !block->launcher) {
+						block->immune = true;
+						block->wall = true;
+						block->verticalPosition = -WALL_HEIGHT;
+						block->color = sf::Color(floorColors[difficulty].r / 2, floorColors[difficulty].g / 2, floorColors[difficulty].b / 2);
+					}
+				}
 			}
 		}
 	}

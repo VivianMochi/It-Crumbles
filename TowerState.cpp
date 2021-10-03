@@ -112,7 +112,20 @@ void TowerState::changeFloor(int floor) {
 		}
 	}
 	else {
-		robot->verticalPosition = -150;
-		robot->verticalVelocity = 80;
+		robot->plummet();
+	}
+
+	int buffer = 25;
+	if (robot->getPosition().x < buffer) {
+		robot->setPosition(buffer, robot->getPosition().y);
+	}
+	else if (robot->getPosition().x > 400 - buffer) {
+		robot->setPosition(400 - buffer, robot->getPosition().y);
+	}
+	if (robot->getPosition().y < buffer) {
+		robot->setPosition(robot->getPosition().x, buffer);
+	}
+	else if (robot->getPosition().y > 400 - buffer) {
+		robot->setPosition(robot->getPosition().x, 400 - buffer);
 	}
 }
