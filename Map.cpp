@@ -363,7 +363,7 @@ void Map::createSplash(sf::Vector2f position, float radius, sf::Color color, flo
 }
 
 void Map::spawnEnemy(bool plummet) {
-	std::shared_ptr<Slime> slime = std::make_shared<Slime>(getEmptySpot(), std::rand() % ((int)difficulty + 1), 1 + difficulty * 0.3);
+	std::shared_ptr<Slime> slime = std::make_shared<Slime>(getEmptySpot(), std::rand() % ((int)difficulty + 1), 1 + difficulty * 0.4);
 	slime->installBrain(std::make_shared<EnemyBrain>());
 	if (plummet) {
 		slime->plummet();

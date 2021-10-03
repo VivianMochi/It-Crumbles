@@ -12,15 +12,15 @@ void initializeStats() {
 	stats["AirAcceleration"] = 1;
 	stats["RobotGravity"] = GRAVITY; // NOT USED
 
-	stats["BulletCooldown"] = 0.5;
+	stats["BulletCooldown"] = 0.25;
 	stats["BulletDamage"] = 3;
 	stats["BulletSpeed"] = 100;
 	stats["BulletFlightTime"] = 0.2;
 	stats["BulletDeviation"] = 0.1;
 
 	stats["BombCooldown"] = 4;
-	stats["BombFuse"] = 3;
+	stats["BombFuse"] = 2;
 	stats["BombDamage"] = 8;
 	stats["BombRadius"] = 30;
-	stats["BombRange"] = 50;
+	stats["BombRange"] = 70;
 }
