@@ -17,18 +17,20 @@ Robot::Robot() {
 void Robot::update(sf::Time elapsed) {
 	// Tick cooldowns
 	bombCooldown -= elapsed.asSeconds();
+	fireCooldown -= elapsed.asSeconds();
 
 	// Control
 	sf::Vector2f desiredVelocity = moveDirection * moveSpeed;
 	velocity += (desiredVelocity - velocity) * elapsed.asSeconds() * (verticalPosition == 0 ? groundAcceleration : airAcceleration);
 
 	if (dodgeControl && verticalPosition == 0) {
-		verticalVelocity = -25;
+		verticalVelocity = -20;
 	}
 
-	if (fireControl && std::rand() % 2 == 0) {
+	if (fireControl && fireCooldown <= 0) {
+		fireCooldown = fireMaxCooldown;
 		sf::Vector2f bulletPosition = getPosition() + vm::normalize(aimDirection) * 6.0f;
-		sf::Vector2f bulletVelocity = vm::rotate(vm::normalize(aimDirection) * 100.0f, std::rand() % 101 / 100.0f * 0.5 - 0.25) + velocity;
+		sf::Vector2f bulletVelocity = vm::rotate(vm::normalize(aimDirection) * 100.0f, std::rand() % 101 / 100.0f * 0.1 - 0.05) + velocity;
 		map->addEntity(std::make_shared<Bullet>(bulletPosition, bulletVelocity, 3, false));
 	}
 

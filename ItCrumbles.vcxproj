@@ -151,6 +151,7 @@
     <ClCompile Include="PlayerBrain.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Robot.cpp" />
+    <ClCompile Include="Smoke.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="TowerState.cpp" />
   </ItemGroup>
@@ -168,6 +169,7 @@
     <ClInclude Include="PlayerBrain.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Robot.h" />
+    <ClInclude Include="Smoke.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="TowerState.h" />
   </ItemGroup>

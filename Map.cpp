@@ -1,6 +1,7 @@
 #include "Map.h"
 
 #include "Helpers.h"
+#include "Smoke.h"
 
 bool blockSortFunction(Block &first, Block &second) {
 	return first.position.y < second.position.y;
@@ -187,16 +188,27 @@ void Map::addEntity(std::shared_ptr<Entity> entity) {
 void Map::createExplosion(sf::Vector2f position, float damage, float radius) {
 	float rippleSpeed = 150;
 
+	// Damage blocks
 	for (Block *block : getBlocksWithinRadius(position, radius)) {
 		float distance = vm::magnitude(block->getCenter() - position);
 		block->damage(damage, distance / rippleSpeed);
 	}
 
+	// Push entities
 	for (auto &entity : entities) {
 		if (vm::magnitude(entity->getPosition() - position) <= radius) {
 			sf::Vector2f direction = vm::normalize(entity->getPosition() - position);
 			entity->velocity = direction * 100.0f;
 			entity->verticalVelocity = -40 - std::rand() % 5;
 		}
+	}
+
+	// Create smoke
+	for (float angle = 0; angle < 2 * 3.14159; angle += 0.2) {
+		sf::Vector2f smokeOffset = vm::rotate(sf::Vector2f(1, 0), angle);
+		sf::Vector2f smokePosition = position + (smokeOffset * radius / 4.0f);
+		sf::Vector2f smokeVelocity = smokeOffset * radius * (3.6f + (std::rand() % 40 / 100.0f));
+		float smokeLifespan = 0.2f + (std::rand() % 20 / 100.0f);
+		addEntity(std::make_shared<Smoke>(position, smokeVelocity, radius / 4.0f, smokeLifespan));
 	}
 }

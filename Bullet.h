@@ -12,7 +12,7 @@ public:
 	// Data
 	float damage = 1;
 	bool evil = true;
-	float flightTime = 0.5;
+	float flightTime = 0.2;
 
 	sf::CircleShape sprite;
 };

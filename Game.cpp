@@ -77,7 +77,8 @@ Game::Game() {
 		}
 
 		// Set the cursor position
-		cursorSprite.setPosition(std::round(getCursorPosition().x), std::round(getCursorPosition().y));
+		//cursorSprite.setPosition(std::round(getCursorPosition().x), std::round(getCursorPosition().y));
+		cursorSprite.setPosition(std::round(getCursorPosition().x - 5), std::round(getCursorPosition().y - 5));
 
 		if (state) {
 			state->update(elapsed);

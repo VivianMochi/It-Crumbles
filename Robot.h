@@ -16,6 +16,8 @@ public:
 	float groundAcceleration = 15;
 	float airAcceleration = 1;
 
+	float fireMaxCooldown = 0.5;
+	float fireCooldown = 0;
 	float bombMaxCooldown = 2;
 	float bombCooldown = 0;
 
