@@ -19,7 +19,9 @@ void TowerState::init() {
 	floors[0].addEntity(robot);
 
 	music.openFromFile("Resource/Music/TowerOfTheAncients.ogg");
-	//music.play();
+	music.setLoop(true);
+	music.setVolume(25);
+	music.play();
 }
 
 void TowerState::gotEvent(sf::Event event) {

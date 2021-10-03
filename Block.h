@@ -39,7 +39,7 @@ public:
 	sf::Color color = sf::Color::White;
 
 	float fallCounter = 0;
-	bool fallen = 0;
+	bool fallen = false;
 	float verticalPosition = 0;
 	float verticalVelocity = 0;
 

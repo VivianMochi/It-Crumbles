@@ -36,8 +36,10 @@ void Bomb::update(sf::Time elapsed) {
 
 	// Update sprite
 	flashCounter += elapsed.asSeconds();
-	if (flashCounter >= 1) {
-		flashCounter -= 1;
+	float flashInterval = fuseTime / 4 + 0.1;
+	if (flashCounter >= flashInterval && !dead) {
+		flashCounter -= flashInterval;
+		map->sounds.playSound("Fuse", 100, 1.5 - fuseTime / 10);
 	}
 	if (flashCounter < 0.1) {
 		sprite.setFillColor(sf::Color::White);

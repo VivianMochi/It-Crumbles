@@ -18,9 +18,12 @@ void EnemyBrain::update(sf::Time elapsed) {
 		sf::Vector2f desiredPosition = target->getPosition() + vm::rotate(sf::Vector2f(desiredRange, 0), orbitAngle);
 		entity->moveDirection = vm::normalize(desiredPosition - entity->getPosition());
 		entity->aimDirection = target->getPosition() - entity->getPosition();
-		entity->fireControl = true;
+
+		targetCounter += elapsed.asSeconds();
+		entity->fireControl = targetCounter >= 1;
 	}
 	else {
+		targetCounter = 0;
 		orbitAngle = std::rand() % 100 / 100.0f * 2 * 3.14159;
 		// Wander
 		phaseCooldown -= elapsed.asSeconds();

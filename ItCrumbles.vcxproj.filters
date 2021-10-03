@@ -93,6 +93,9 @@
     <ClCompile Include="Slime.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="SoundManager.cpp">
+      <Filter>Source Files\Basecode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -143,8 +146,11 @@
     <ClInclude Include="Smoke.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
+    <ClInclude Include="SoundManager.h">
+      <Filter>Header Files\Basecode</Filter>
+    </ClInclude>
     <ClInclude Include="Slime.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Objects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

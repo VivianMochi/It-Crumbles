@@ -153,6 +153,7 @@
     <ClCompile Include="Robot.cpp" />
     <ClCompile Include="Slime.cpp" />
     <ClCompile Include="Smoke.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="TowerState.cpp" />
   </ItemGroup>
@@ -172,6 +173,7 @@
     <ClInclude Include="Robot.h" />
     <ClInclude Include="Slime.h" />
     <ClInclude Include="Smoke.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="TowerState.h" />
   </ItemGroup>

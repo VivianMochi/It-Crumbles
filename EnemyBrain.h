@@ -14,6 +14,7 @@ public:
 	} phase = idle;
 	float phaseCooldown = 0.2;
 
+	float targetCounter = 0;
 	float desiredRange = 30;
 	float orbitAngle = 0;
 	float orbitSpeed = 0.5;

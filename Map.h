@@ -3,6 +3,7 @@
 #include "Block.h"
 #include "Robot.h"
 #include "PlayerBrain.h"
+#include "SoundManager.h"
 #include <SFML/Graphics.hpp>
 #include <vector>
 
@@ -39,6 +40,8 @@ public:
 	std::vector<Block> blocks;
 	std::vector<std::shared_ptr<Entity>> entities;
 	std::vector<std::shared_ptr<Entity>> entitiesToAdd;
+
+	SoundManager sounds;
 
 private:
 

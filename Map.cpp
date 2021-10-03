@@ -75,6 +75,7 @@ void Map::generateMap() {
 	float bigBlockRate = 0.8;
 	float wallRate = 0.5;
 	float enemyRate = 0.5;
+	float damageRate = 0;
 
 	// Generate big blocks
 	for (int tries = MAP_SIZE.x * MAP_SIZE.y / 4 * bigBlockRate; tries > 0; tries--) {
@@ -110,6 +111,11 @@ void Map::generateMap() {
 
 	// Order the blocks by their y positions
 	std::sort(blocks.begin(), blocks.end(), blockSortFunction);
+
+	// Do initial damage
+	for (int i = 0; i < MAP_SIZE.x * MAP_SIZE.y / 20 * damageRate; i++) {
+		createExplosion(getEmptySpot(), std::rand() % 10 + 2, std::rand() % 60 + 10);
+	}
 
 	// Place down a bunch of enemies
 	for (int i = 0; i < MAP_SIZE.x * MAP_SIZE.y / 40 * enemyRate; i++) {
@@ -213,7 +219,7 @@ std::shared_ptr<Entity> Map::getNearestEnemy(sf::Vector2f position, float range,
 
 sf::Vector2f Map::getEmptySpot() {
 	sf::Vector2f output = sf::Vector2f(-100, -100);
-	while (!getBlockAt(output) || getBlockAt(output)->wall) {
+	while (!getBlockAt(output) || getBlockAt(output)->wall || getBlockAt(output)->fallen) {
 		output = sf::Vector2f((std::rand() % MAP_SIZE.x) * TILE_SIZE + TILE_SIZE / 2, (std::rand() % MAP_SIZE.y) * TILE_SIZE + TILE_SIZE / 2);
 	}
 	return output;
@@ -246,12 +252,16 @@ void Map::createExplosion(sf::Vector2f position, float damage, float radius) {
 
 	// Create smoke
 	createSplash(position, radius, sf::Color(30, 30, 30));
+
+	// Play sound
+	sounds.playSound("Explosion", 100, -1);
 }
 
 void Map::createDust(sf::Vector2f position, sf::Vector2f direction) {
 	if (getBlockAt(position)) {
 		float smokeLifespan = 0.2f + (std::rand() % 20 / 100.0f);
 		addEntity(std::make_shared<Smoke>(position, direction * 20.0f, 3, smokeLifespan, 0, getBlockAt(position)->color));
+		sounds.playSound("Impact", 50, -1);
 	}
 }
 
@@ -267,5 +277,6 @@ void Map::createSplash(sf::Vector2f position, float radius, sf::Color color, flo
 			float smokeLifespan = 0.2f + (std::rand() % 20 / 100.0f);
 			addEntity(std::make_shared<Smoke>(position, smokeVelocity, radius / 4.0f, smokeLifespan, 0, color));
 		}
+		sounds.playSound("Impact", 100, -1);
 	}
 }

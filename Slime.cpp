@@ -110,9 +110,15 @@ void Slime::draw(sf::RenderTarget & target, sf::RenderStates states) const {
 	target.draw(sprite, states);
 }
 
+void Slime::dealDamage(float amount, sf::Vector2f direction, std::string damageType) {
+	Entity::dealDamage(amount, direction, damageType);
+	map->sounds.playSound("Hit");
+}
+
 void Slime::onDeath() {
 	if (!falling) {
 		map->createSplash(getPosition(), 10, sf::Color(0x891F1FFF), 0.2);
 		map->createSplash(getPosition(), 6, sf::Color(0xFF6666FF), 0.2);
+		map->sounds.playSound("Kill");
 	}
 }
