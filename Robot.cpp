@@ -5,6 +5,7 @@
 #include "Bomb.h"
 #include "Helpers.h"
 #include "ResourceManager.h"
+#include "Stats.h"
 
 Robot::Robot() {
 	size = sf::Vector2f(6, 10);
@@ -22,8 +23,8 @@ void Robot::update(sf::Time elapsed) {
 	// Control
 	if (haveControl()) {
 		if (!isRocketing()) {
-			sf::Vector2f desiredVelocity = moveDirection * moveSpeed;
-			velocity += (desiredVelocity - velocity) * elapsed.asSeconds() * (onGround() ? groundAcceleration : airAcceleration);
+			sf::Vector2f desiredVelocity = moveDirection * stats.at("Movespeed");
+			velocity += (desiredVelocity - velocity) * elapsed.asSeconds() * (onGround() ? stats.at("GroundAcceleration") : stats.at("AirAcceleration"));
 
 			if (jumpControl && onGround()) {
 				Block *standingOn = map->getBlockAt(getPosition());
@@ -40,18 +41,23 @@ void Robot::update(sf::Time elapsed) {
 		}
 
 		if (fireControl && fireCooldown <= 0) {
-			fireCooldown = fireMaxCooldown;
+			fireCooldown = stats.at("BulletCooldown");
 			sf::Vector2f bulletPosition = getPosition() + vm::normalize(aimDirection) * 6.0f;
 			sf::Vector2f bulletVelocity = vm::rotate(vm::normalize(aimDirection) * 100.0f, std::rand() % 101 / 100.0f * 0.1 - 0.05);
-			map->addEntity(std::make_shared<Bullet>(bulletPosition, bulletVelocity, 3, false, verticalPosition));
+			map->addEntity(std::make_shared<Bullet>(bulletPosition, bulletVelocity, stats.at("BulletDamage"), false, verticalPosition));
 			map->sounds.playSound("Shoot", 100, -1);
 		}
 
 		if (abilityControl && bombCooldown <= 0) {
-			bombCooldown = bombMaxCooldown;
+			bombCooldown = stats.at("BombCooldown");
 			sf::Vector2f bombPosition = getPosition() + vm::normalize(aimDirection);
+			if (vm::magnitude(aimDirection) > stats.at("BombRange")) {
+				aimDirection = vm::normalize(aimDirection) * stats.at("BombRange");
+			}
 			sf::Vector2f bombVelocity = aimDirection;
-			map->addEntity(std::make_shared<Bomb>(bombPosition, bombVelocity, 8, 30, true, verticalPosition));
+			std::shared_ptr<Bomb> bomb = std::make_shared<Bomb>(bombPosition, bombVelocity, stats.at("BombDamage"), stats.at("BombRadius"), true, verticalPosition);
+			bomb->fuseTime = stats.at("BombFuse");
+			map->addEntity(bomb);
 			map->sounds.playSound("Throw", 100, -1);
 		}
 	}

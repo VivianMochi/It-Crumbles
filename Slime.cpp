@@ -4,6 +4,7 @@
 #include "ResourceManager.h"
 #include "Bullet.h"
 #include "Helpers.h"
+#include "Stats.h"
 
 Slime::Slime(sf::Vector2f position) {
 	setPosition(position);
@@ -120,5 +121,6 @@ void Slime::onDeath() {
 		map->createSplash(getPosition(), 10, sf::Color(0x891F1FFF), 0.2);
 		map->createSplash(getPosition(), 6, sf::Color(0xFF6666FF), 0.2);
 		map->sounds.playSound("Kill");
+		tokens += 1;
 	}
 }

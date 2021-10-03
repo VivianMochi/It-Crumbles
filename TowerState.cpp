@@ -3,6 +3,7 @@
 #include "Helpers.h"
 #include "ResourceManager.h"
 #include "Constants.h"
+#include "Stats.h"
 
 TowerState::TowerState() {
 
@@ -13,6 +14,8 @@ TowerState::~TowerState() {
 }
 
 void TowerState::init() {
+	initializeStats();
+
 	robot = std::make_shared<Robot>();
 	robot->installBrain(std::make_shared<PlayerBrain>());
 	robot->setPosition(200, 300);
@@ -27,9 +30,19 @@ void TowerState::init() {
 
 	hudBackdrop.setTexture(rm::loadTexture("Resource/Image/HudBackdrop.png"));
 
+	bombIcon.setTexture(rm::loadTexture("Resource/Image/BombHud.png"));
+	bombIcon.setTextureRect(sf::IntRect(0, 20, 20, 20));
+	bombIcon.setPosition(2, 99);
+	bombBar.setTexture(rm::loadTexture("Resource/Image/BombHud.png"));
+	bombBar.setTextureRect(sf::IntRect(20, 0, 27, 12));
+	bombBar.setPosition(bombIcon.getPosition() + sf::Vector2f(20, 8));
+
 	floorText.setTexture(rm::loadTexture("Resource/Image/Font.png"));
 	floorText.setPosition(2, 2);
 	floorText.setColor(sf::Color::White);
+
+	tokenText.setTexture(rm::loadTexture("Resource/Image/Font.png"));
+	tokenText.setColor(sf::Color::White);
 
 	cameraPosition = robot->getPosition() - sf::Vector2f(getGame()->gameSize / 2);
 
@@ -70,6 +83,14 @@ void TowerState::update(sf::Time elapsed) {
 
 	// Update UI
 	floorText.setText("Floor " + std::to_string(currentFloor));
+	tokenText.setText(std::to_string(tokens) + " Tokens");
+	tokenText.setPosition(240 - tokenText.getWidth() - 2, 135 - 10);
+	if (robot->bombCooldown > 0) {
+		bombBar.setTextureRect(sf::IntRect(20, 12 * std::floor((1 - robot->bombCooldown / stats.at("BombCooldown")) * 4), 27, 12));
+	}
+	else {
+		bombBar.setTextureRect(sf::IntRect(20, 48, 27, 12));
+	}
 
 	// Update camera
 	sf::Vector2f desiredCameraPosition = (robot->getPosition() + robot->getPosition() + (getGame()->getCursorPosition() + cameraPosition)) / 3.0f - sf::Vector2f(getGame()->gameSize / 2);
@@ -84,6 +105,9 @@ void TowerState::render(sf::RenderWindow &window) {
 
 	window.draw(hudBackdrop);
 	window.draw(floorText);
+	window.draw(tokenText);
+	window.draw(bombIcon);
+	window.draw(bombBar);
 }
 
 void TowerState::changeFloor(int floor) {

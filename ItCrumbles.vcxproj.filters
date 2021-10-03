@@ -99,6 +99,9 @@
     <ClCompile Include="BitmapText.cpp">
       <Filter>Source Files\Basecode</Filter>
     </ClCompile>
+    <ClCompile Include="Stats.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -157,6 +160,9 @@
     </ClInclude>
     <ClInclude Include="BitmapText.h">
       <Filter>Header Files\Basecode</Filter>
+    </ClInclude>
+    <ClInclude Include="Stats.h">
+      <Filter>Header Files\World</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

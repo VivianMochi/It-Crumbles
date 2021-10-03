@@ -24,7 +24,10 @@ public:
 	std::shared_ptr<Robot> robot;
 
 	sf::Sprite hudBackdrop;
+	sf::Sprite bombIcon;
+	sf::Sprite bombBar;
 	BitmapText floorText;
+	BitmapText tokenText;
 
 	sf::Music music;
 };
