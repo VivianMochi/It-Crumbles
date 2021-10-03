@@ -2,14 +2,20 @@
 
 #include "Map.h"
 
-Bomb::Bomb(sf::Vector2f position, sf::Vector2f velocity, float damage, float radius, bool evil) {
+Bomb::Bomb(sf::Vector2f position, sf::Vector2f velocity, float damage, float radius, bool evil, bool raised) {
 	setPosition(position);
 	this->velocity = velocity;
 	this->damage = damage;
 	this->radius = radius;
 	this->evil = evil;
 	size = sf::Vector2f(6, 6);
-	verticalVelocity = -20;
+	if (raised) {
+		verticalVelocity = -10;
+		verticalPosition = -5;
+	}
+	else {
+		verticalVelocity = -18;
+	}
 
 	sprite.setRadius(3);
 	sprite.setOrigin(sprite.getRadius(), sprite.getRadius() * 2);

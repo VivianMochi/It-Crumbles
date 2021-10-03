@@ -2,6 +2,8 @@
 
 #include "Entity.h"
 
+const sf::Vector2i ROBOT_FRAME_SIZE = { 10, 16 };
+
 class Robot : public Entity {
 public:
 	Robot();
@@ -16,6 +18,10 @@ public:
 
 	float bombMaxCooldown = 2;
 	float bombCooldown = 0;
+
+	bool facingRight = true;
+	int frame = 0;
+	float frameCounter = 0;
 
 	sf::Sprite sprite;
 };

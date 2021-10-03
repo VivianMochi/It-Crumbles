@@ -41,6 +41,19 @@ void Entity::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 		shadow.setPosition(getPosition());
 		target.draw(shadow, states);
 	}
+
+	// Draw hitbox
+	bool drawHitbox = false;
+	if (drawHitbox) {
+		sf::RectangleShape sprite;
+		sprite.setSize(size);
+		sprite.setOrigin(size.x / 2, size.y);
+		sprite.setPosition(getPosition() + sf::Vector2f(0, verticalPosition));
+		sprite.setOutlineThickness(-1);
+		sprite.setFillColor(sf::Color::Transparent);
+		sprite.setOutlineColor(sf::Color::Red);
+		target.draw(sprite, states);
+	}
 }
 
 void Entity::moveWithCollision(sf::Vector2f delta) {
