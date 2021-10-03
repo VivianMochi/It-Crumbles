@@ -20,27 +20,29 @@ void Robot::update(sf::Time elapsed) {
 	bombCooldown -= elapsed.asSeconds();
 
 	// Control
-	if (!isRocketing()) {
-		sf::Vector2f desiredVelocity = moveDirection * moveSpeed;
-		velocity += (desiredVelocity - velocity) * elapsed.asSeconds() * (verticalPosition == 0 ? groundAcceleration : airAcceleration);
+	if (haveControl()) {
+		if (!isRocketing()) {
+			sf::Vector2f desiredVelocity = moveDirection * moveSpeed;
+			velocity += (desiredVelocity - velocity) * elapsed.asSeconds() * (onGround() ? groundAcceleration : airAcceleration);
 
-		if (dodgeControl && verticalPosition == 0) {
-			verticalVelocity = -20;
+			if (dodgeControl && onGround()) {
+				verticalVelocity = -20;
+			}
 		}
-	}
 
-	if (fireControl && fireCooldown <= 0) {
-		fireCooldown = fireMaxCooldown;
-		sf::Vector2f bulletPosition = getPosition() + vm::normalize(aimDirection) * 6.0f;
-		sf::Vector2f bulletVelocity = vm::rotate(vm::normalize(aimDirection) * 100.0f, std::rand() % 101 / 100.0f * 0.1 - 0.05);
-		map->addEntity(std::make_shared<Bullet>(bulletPosition, bulletVelocity, 3, false, verticalPosition));
-	}
+		if (fireControl && fireCooldown <= 0) {
+			fireCooldown = fireMaxCooldown;
+			sf::Vector2f bulletPosition = getPosition() + vm::normalize(aimDirection) * 6.0f;
+			sf::Vector2f bulletVelocity = vm::rotate(vm::normalize(aimDirection) * 100.0f, std::rand() % 101 / 100.0f * 0.1 - 0.05);
+			map->addEntity(std::make_shared<Bullet>(bulletPosition, bulletVelocity, 3, false, verticalPosition));
+		}
 
-	if (bombControl && bombCooldown <= 0) {
-		bombCooldown = bombMaxCooldown;
-		sf::Vector2f bombPosition = getPosition() + vm::normalize(aimDirection);
-		sf::Vector2f bombVelocity = aimDirection;
-		map->addEntity(std::make_shared<Bomb>(bombPosition, bombVelocity, 8, 30, true, verticalPosition));
+		if (bombControl && bombCooldown <= 0) {
+			bombCooldown = bombMaxCooldown;
+			sf::Vector2f bombPosition = getPosition() + vm::normalize(aimDirection);
+			sf::Vector2f bombVelocity = aimDirection;
+			map->addEntity(std::make_shared<Bomb>(bombPosition, bombVelocity, 8, 30, true, verticalPosition));
+		}
 	}
 
 	Entity::update(elapsed);
@@ -56,7 +58,7 @@ void Robot::update(sf::Time elapsed) {
 			}
 		}
 	}
-	else if (verticalPosition < 0) {
+	else if (!onGround()) {
 		frame = 1;
 	}
 	else if (vm::magnitude(moveDirection) > 0) {

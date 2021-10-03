@@ -15,27 +15,41 @@ void Entity::update(sf::Time elapsed) {
 	// Fall to ground
 	verticalVelocity += GRAVITY * elapsed.asSeconds();
 	verticalPosition += verticalVelocity * elapsed.asSeconds();
-	if (verticalPosition >= 0) {
-		verticalPosition = 0;
-		verticalVelocity = 0;
+	if (verticalPosition >= 0 && !falling) {
+		// Check to make sure there is ground
+		bool onFloor = map->checkBoxCollision(getFloorHitbox(), true);
+		if (onFloor) {
+			verticalPosition = 0;
+			verticalVelocity = 0;
 
-		// If touching down inside a wall, bounce
-		sf::Vector2f hitboxPosition = sf::Vector2f(getPosition().x - size.x / 2, getPosition().y - size.x / 4);
-		sf::Vector2f hitboxSize = sf::Vector2f(size.x, size.x / 2);
-		bool insideWall = map->checkBoxCollision(hitboxPosition, hitboxSize);
-		if (insideWall) {
-			rocketTime += 1;
-			verticalVelocity = -20;
-			velocity += sf::Vector2f(std::rand() % 41 - 20, std::rand() % 41 - 20);
+			// If touching down inside a wall, bounce
+			bool insideWall = map->checkBoxCollision(getFloorHitbox());
+			if (insideWall) {
+				rocketTime += 1;
+				verticalVelocity = -20;
+				velocity += sf::Vector2f(std::rand() % 41 - 20, std::rand() % 41 - 20);
+			}
+			else {
+				// Otherwise stop rocketing
+				rocketTime = 0;
+			}
 		}
 		else {
-			// Otherwise stop rocketing
-			rocketTime = 0;
+			// Below the map and falling
+			falling = true;
+			if (verticalPosition == 0) {
+				verticalPosition = 0.01;
+			}
+			rocketTime = 5;
 		}
 	}
 
-	// Do drag if on ground
-	if (verticalPosition == 0) {
+	if (falling && verticalPosition > ENTITY_FALLEN_DEPTH) {
+		dead = true;
+	}
+
+	// Do drag if on ground or falling
+	if (onGround() || falling) {
 		velocity = velocity * float(std::pow(0.1, elapsed.asSeconds()));
 	}
 
@@ -63,7 +77,7 @@ void Entity::update(sf::Time elapsed) {
 
 void Entity::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 	// Draw shadow
-	if (verticalPosition < 0) {
+	if (!onGround() && !falling) {
 		sf::RectangleShape shadow;
 		shadow.setSize(sf::Vector2f(size.x, 2));
 		shadow.setOrigin(sf::Vector2f(size.x / 2, 2));
@@ -91,30 +105,30 @@ void Entity::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 }
 
 void Entity::moveWithCollision(sf::Vector2f delta) {
-	sf::Vector2f hitboxPosition = sf::Vector2f(getPosition().x - size.x / 2, getPosition().y - size.x / 4);
-	sf::Vector2f hitboxSize = sf::Vector2f(size.x, size.x / 2);
-
-	bool insideWall = map->checkBoxCollision(hitboxPosition, hitboxSize);
+	bool insideWall = map->checkBoxCollision(getFloorHitbox());
 
 	// If high enough or inside a wall, ignore collisions
 	if (verticalPosition < -WALL_HEIGHT * 2 || insideWall) {
 		move(delta);
 	}
-	else if (isRocketing()) {
+	else if (isRocketing() && !falling) {
 		// Also ignore collisions if rocketing
 		move(delta);
 	}
 	else {
-		// Do x
-		if (!map->checkBoxCollision(hitboxPosition + sf::Vector2f(delta.x, 0), hitboxSize)) {
+		sf::Vector2f hitboxPosition = sf::Vector2f(getFloorHitbox().left, getFloorHitbox().top);
+		sf::Vector2f hitboxSize = sf::Vector2f(getFloorHitbox().width, getFloorHitbox().height);
+
+		// Try x movement, and include floors in collision if falling
+		if (!map->checkBoxCollision(hitboxPosition + sf::Vector2f(delta.x, 0), hitboxSize, falling)) {
 			move(delta.x, 0);
 		}
 		else {
 			velocity.x = 0;
 		}
 
-		// Do y
-		if (!map->checkBoxCollision(hitboxPosition + sf::Vector2f(0, delta.y), hitboxSize)) {
+		// Try y movement, and include floors in collision if falling
+		if (!map->checkBoxCollision(hitboxPosition + sf::Vector2f(0, delta.y), hitboxSize, falling)) {
 			move(0, delta.y);
 		}
 		else {
@@ -142,6 +156,26 @@ void Entity::installBrain(std::shared_ptr<Brain> brain) {
 	this->brain->entity = this;
 }
 
+sf::FloatRect Entity::getFloorHitbox() {
+	sf::Vector2f hitboxSize = sf::Vector2f(size.x, size.x / 2);
+	if (hitboxSize.x < 2) {
+		hitboxSize.x = 2;
+	}
+	if (hitboxSize.y < 2) {
+		hitboxSize.y = 2;
+	}
+	sf::Vector2f hitboxPosition = sf::Vector2f(getPosition().x - hitboxSize.x / 2, getPosition().y - hitboxSize.y / 2);
+	return sf::FloatRect(hitboxPosition, hitboxSize);
+}
+
+bool Entity::haveControl() const {
+	return !falling && !dead;
+}
+
+bool Entity::onGround() const {
+	return verticalPosition == 0;
+}
+
 bool Entity::isRocketing() const {
-	return rocketTime > 0 && !dead;
+	return canRocket && rocketTime > 0 && !dead;
 }

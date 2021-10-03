@@ -18,20 +18,27 @@ public:
 	void setMaxHealth(int maxHealth);
 	void installBrain(std::shared_ptr<Brain> brain);
 
+	// Helpers
+	sf::FloatRect getFloorHitbox();
+
 	// Checks
+	bool haveControl() const;
+	bool onGround() const;
 	bool isRocketing() const;
 
 	// References
 	Map *map;
 
 	// Data
-	sf::Vector2f size;
+	sf::Vector2f size = { 2, 2 };
 	sf::Vector2f velocity;
 	float verticalPosition = 0;
 	float verticalVelocity = 0;
 	float maxHealth = 1000000;
 	float health = 1000000;
 	bool dead = false;
+	bool falling = false;
+	bool canRocket = true;
 	float rocketTime = 0;
 	float rocketSmokeCooldown = 0;
 

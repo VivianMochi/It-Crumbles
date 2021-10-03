@@ -73,7 +73,7 @@ void Map::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 void Map::generateMap() {
 	float bigBlockRate = 0.8;
 	float wallRate = 0.5;
-	float enemyRate = 1;
+	float enemyRate = 0.1;
 
 	// Generate big blocks
 	for (int tries = MAP_SIZE.x * MAP_SIZE.y / 4 * bigBlockRate; tries > 0; tries--) {
@@ -176,16 +176,20 @@ bool Map::isAreaEmpty(sf::Vector2i position, sf::Vector2i size) {
 	return true;
 }
 
-bool Map::checkBoxCollision(sf::Vector2f position, sf::Vector2f size) {
+bool Map::checkBoxCollision(sf::Vector2f position, sf::Vector2f size, bool floors) {
 	sf::FloatRect testBox(position, size);
 	for (Block &block : blocks) {
-		if (block.isBlocking()) {
+		if (block.isBlocking() || (floors && !block.fallen)) {
 			if (testBox.intersects(sf::FloatRect(sf::Vector2f(block.position * TILE_SIZE), sf::Vector2f(block.size, block.size)))) {
 				return true;
 			}
 		}
 	}
 	return false;
+}
+
+bool Map::checkBoxCollision(sf::FloatRect hitbox, bool floors) {
+	return checkBoxCollision(sf::Vector2f(hitbox.left, hitbox.top), sf::Vector2f(hitbox.width, hitbox.height), floors);
 }
 
 std::shared_ptr<Entity> Map::getNearestEnemy(sf::Vector2f position, float range, bool evil) {

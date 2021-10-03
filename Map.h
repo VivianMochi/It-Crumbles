@@ -25,7 +25,8 @@ public:
 	std::vector<Block*> getBlocksWithinBox(sf::Vector2i position, sf::Vector2i size);
 	std::vector<Block*> getBlocksWithinRadius(sf::Vector2f position, float radius);
 	bool isAreaEmpty(sf::Vector2i position, sf::Vector2i size = sf::Vector2i(2, 2));
-	bool checkBoxCollision(sf::Vector2f position, sf::Vector2f size);
+	bool checkBoxCollision(sf::Vector2f position, sf::Vector2f size, bool floors = false);
+	bool checkBoxCollision(sf::FloatRect hitbox, bool floors = false);
 	std::shared_ptr<Entity> getNearestEnemy(sf::Vector2f position, float range = -1, bool evil = false);
 	sf::Vector2f getEmptySpot();
 

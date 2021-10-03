@@ -40,10 +40,6 @@ void Bullet::update(sf::Time elapsed) {
 	// Simplification of Entity::update()
 	verticalVelocity += GRAVITY * elapsed.asSeconds();
 	verticalPosition += verticalVelocity * elapsed.asSeconds();
-	if (verticalPosition >= 0) {
-		verticalPosition = 0;
-		verticalVelocity = 0;
-	}
 	move(velocity * elapsed.asSeconds());
 
 	// Collide with enemies
@@ -63,12 +59,18 @@ void Bullet::update(sf::Time elapsed) {
 		}
 	}
 
-	// Collide with floor
-	if (verticalPosition == 0) {
-		dead = true;
-		Block *groundCollision = map->getBlockAt(getPosition());
-		if (groundCollision) {
-			groundCollision->dealDamage(damage);
+	// Collide with floor or fall out
+	if (verticalPosition >= 0) {
+		bool onFloor = map->checkBoxCollision(getFloorHitbox(), true);
+		if (onFloor) {
+			dead = true;
+			Block *groundCollision = map->getBlockAt(getPosition());
+			if (groundCollision) {
+				groundCollision->dealDamage(damage);
+			}
+		}
+		else if (verticalPosition >= ENTITY_FALLEN_DEPTH) {
+			dead = true;
 		}
 	}
 

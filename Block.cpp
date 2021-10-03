@@ -47,7 +47,7 @@ void Block::update(sf::Time elapsed) {
 	if (health <= 0) {
 		fallCounter += elapsed.asSeconds();
 	}
-	if (health <= 0 && fallCounter >= CRUMBLE_TIME && verticalPosition >= FALLEN_DEPTH) {
+	if (health <= 0 && fallCounter >= CRUMBLE_TIME && verticalPosition >= BLOCK_FALLEN_DEPTH) {
 		fallen = true;
 	}
 
@@ -57,7 +57,7 @@ void Block::update(sf::Time elapsed) {
 		desiredVerticalPosition = -WALL_HEIGHT;
 	}
 	if (health <= 0 && fallCounter >= CRUMBLE_TIME) {
-		desiredVerticalPosition = FALLEN_DEPTH;
+		desiredVerticalPosition = BLOCK_FALLEN_DEPTH;
 		verticalVelocity += GRAVITY * elapsed.asSeconds();
 	}
 	else {
@@ -67,11 +67,11 @@ void Block::update(sf::Time elapsed) {
 	verticalPosition += elapsed.asSeconds() * verticalVelocity;
 
 	// Update color
-	if (verticalPosition >= FALLEN_DEPTH) {
+	if (verticalPosition >= BLOCK_FALLEN_DEPTH) {
 		color.a = 0;
 	}
 	else if (verticalPosition >= 5) {
-		color.a = (FALLEN_DEPTH - verticalPosition) / 5 * 255;
+		color.a = (BLOCK_FALLEN_DEPTH - verticalPosition) / 5 * 255;
 	}
 	else {
 		color.a = 255;

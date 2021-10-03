@@ -8,6 +8,7 @@ Smoke::Smoke(sf::Vector2f position, sf::Vector2f velocity, float radius, float l
 	this->maxLifespan = lifespan;
 	this->verticalPosition = verticalPosition;
 	this->color = color;
+	canRocket = false;
 
 	if (grow) {
 		sprite.setRadius(radius / 4.0f);

@@ -7,7 +7,6 @@ const int DEPTH_SIZE = 5;
 const int WALL_HEIGHT = 4;
 
 const float CRUMBLE_TIME = 1;
-const int FALLEN_DEPTH = 10;
 
 struct damageEvent {
 	float amount;
