@@ -12,6 +12,11 @@ void Entity::updateBrain(sf::Time elapsed) {
 }
 
 void Entity::update(sf::Time elapsed) {
+	// Tick timers
+	damageTimer -= elapsed.asSeconds();
+
+	bool wasInAir = !onGround();
+
 	// Fall to ground
 	verticalVelocity += GRAVITY * elapsed.asSeconds();
 	verticalPosition += verticalVelocity * elapsed.asSeconds();
@@ -33,6 +38,12 @@ void Entity::update(sf::Time elapsed) {
 				// Otherwise stop rocketing
 				rocketTime = 0;
 			}
+
+			// Create a splash effect
+			// Todo: using canRocket might not be right
+			if (wasInAir && canRocket) {
+				map->createSplash(getPosition(), 10, sf::Color::Transparent, 0.2);
+			}
 		}
 		else {
 			// Below the map and falling
@@ -44,7 +55,7 @@ void Entity::update(sf::Time elapsed) {
 		}
 	}
 
-	if (falling && verticalPosition > ENTITY_FALLEN_DEPTH) {
+	if (falling && verticalPosition >= ENTITY_FALLEN_DEPTH) {
 		dead = true;
 	}
 
@@ -139,11 +150,16 @@ void Entity::moveWithCollision(sf::Vector2f delta) {
 
 void Entity::dealDamage(float amount, sf::Vector2f direction, std::string damageType) {
 	health -= amount;
+	damageTimer = 0.1;
 	if (health <= 0) {
 		dead = true;
 	}
 	// Todo: this may be too strong
 	velocity += direction * amount * 50.f;
+}
+
+void Entity::onDeath() {
+
 }
 
 void Entity::setMaxHealth(int maxHealth) {
@@ -170,11 +186,11 @@ sf::FloatRect Entity::getFloorHitbox() {
 
 sf::Color Entity::getFallingColor(sf::Color color) {
 	float fadeStart = 5;
-	if (verticalPosition >= BLOCK_FALLEN_DEPTH) {
+	if (verticalPosition >= ENTITY_FALLEN_DEPTH) {
 		color.a = 0;
 	}
 	else if (verticalPosition >= fadeStart) {
-		color.a = (BLOCK_FALLEN_DEPTH - verticalPosition) / (BLOCK_FALLEN_DEPTH - fadeStart) * 255;
+		color.a = (ENTITY_FALLEN_DEPTH - verticalPosition) / (ENTITY_FALLEN_DEPTH - fadeStart) * 255;
 	}
 	else {
 		color.a = 255;

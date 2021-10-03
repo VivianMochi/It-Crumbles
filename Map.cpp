@@ -26,6 +26,7 @@ void Map::update(sf::Time elapsed) {
 		(*entity)->update(elapsed);
 
 		if ((*entity)->dead) {
+			(*entity)->onDeath();
 			entity = entities.erase(entity);
 		}
 		else {
@@ -73,7 +74,7 @@ void Map::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 void Map::generateMap() {
 	float bigBlockRate = 0.8;
 	float wallRate = 0.5;
-	float enemyRate = 0.1;
+	float enemyRate = 0.5;
 
 	// Generate big blocks
 	for (int tries = MAP_SIZE.x * MAP_SIZE.y / 4 * bigBlockRate; tries > 0; tries--) {
@@ -244,11 +245,27 @@ void Map::createExplosion(sf::Vector2f position, float damage, float radius) {
 	}
 
 	// Create smoke
-	for (float angle = 0; angle < 2 * 3.14159; angle += 0.2) {
-		sf::Vector2f smokeOffset = vm::rotate(sf::Vector2f(1, 0), angle);
-		sf::Vector2f smokePosition = position + (smokeOffset * radius / 4.0f);
-		sf::Vector2f smokeVelocity = smokeOffset * radius * (3.6f + (std::rand() % 40 / 100.0f));
+	createSplash(position, radius, sf::Color(30, 30, 30));
+}
+
+void Map::createDust(sf::Vector2f position, sf::Vector2f direction) {
+	if (getBlockAt(position)) {
 		float smokeLifespan = 0.2f + (std::rand() % 20 / 100.0f);
-		addEntity(std::make_shared<Smoke>(position, smokeVelocity, radius / 4.0f, smokeLifespan));
+		addEntity(std::make_shared<Smoke>(position, direction * 20.0f, 3, smokeLifespan, 0, getBlockAt(position)->color));
+	}
+}
+
+void Map::createSplash(sf::Vector2f position, float radius, sf::Color color, float fullness) {
+	if (color == sf::Color::Transparent && getBlockAt(position)) {
+		color = getBlockAt(position)->color;
+	}
+
+	if (color != sf::Color::Transparent) {
+		for (float angle = 0; angle < 2 * 3.14159; angle += 0.2 / (fullness + 0.01)) {
+			sf::Vector2f smokeOffset = vm::rotate(sf::Vector2f(1, 0), angle);
+			sf::Vector2f smokeVelocity = smokeOffset * radius * (3.6f + (std::rand() % 40 / 100.0f));
+			float smokeLifespan = 0.2f + (std::rand() % 20 / 100.0f);
+			addEntity(std::make_shared<Smoke>(position, smokeVelocity, radius / 4.0f, smokeLifespan, 0, color));
+		}
 	}
 }

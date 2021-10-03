@@ -38,7 +38,5 @@ void Smoke::update(sf::Time elapsed) {
 }
 
 void Smoke::draw(sf::RenderTarget &target, sf::RenderStates states) const {
-	Entity::draw(target, states);
-
 	target.draw(sprite, states);
 }

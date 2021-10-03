@@ -77,7 +77,7 @@ void Slime::update(sf::Time elapsed) {
 	if (isRocketing()) {
 		adjustedFrame += 4;
 	}
-	sprite.setTextureRect(sf::IntRect(sf::Vector2i(adjustedFrame * SLIME_FRAME_SIZE.x, 0), SLIME_FRAME_SIZE));
+	sprite.setTextureRect(sf::IntRect(sf::Vector2i(adjustedFrame * SLIME_FRAME_SIZE.x, damageTimer > 0 ? SLIME_FRAME_SIZE.y : 0), SLIME_FRAME_SIZE));
 
 	// Update sprite
 	if (isRocketing()) {
@@ -108,4 +108,11 @@ void Slime::draw(sf::RenderTarget & target, sf::RenderStates states) const {
 	Entity::draw(target, states);
 
 	target.draw(sprite, states);
+}
+
+void Slime::onDeath() {
+	if (!falling) {
+		map->createSplash(getPosition(), 10, sf::Color(0x891F1FFF), 0.2);
+		map->createSplash(getPosition(), 6, sf::Color(0xFF6666FF), 0.2);
+	}
 }

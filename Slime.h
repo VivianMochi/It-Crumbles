@@ -10,6 +10,7 @@ public:
 
 	virtual void update(sf::Time elapsed) override;
 	virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
+	virtual void onDeath() override;
 
 	// Stats
 	float moveSpeed = 30;

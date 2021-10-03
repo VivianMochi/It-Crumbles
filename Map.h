@@ -33,6 +33,8 @@ public:
 	// Interaction
 	void addEntity(std::shared_ptr<Entity> entity);
 	void createExplosion(sf::Vector2f position, float damage, float radius);
+	void createDust(sf::Vector2f position, sf::Vector2f direction);
+	void createSplash(sf::Vector2f position, float radius, sf::Color color = sf::Color::Transparent, float fullness = 1);
 
 	std::vector<Block> blocks;
 	std::vector<std::shared_ptr<Entity>> entities;

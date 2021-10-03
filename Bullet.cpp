@@ -56,6 +56,7 @@ void Bullet::update(sf::Time elapsed) {
 		if (wallCollision && wallCollision->isBlocking()) {
 			dead = true;
 			wallCollision->dealDamage(damage);
+			map->createSplash(getPosition(), 10, sf::Color::Transparent, 0.1);
 		}
 	}
 
@@ -67,6 +68,7 @@ void Bullet::update(sf::Time elapsed) {
 			Block *groundCollision = map->getBlockAt(getPosition());
 			if (groundCollision) {
 				groundCollision->dealDamage(damage);
+				map->createSplash(getPosition(), 10, sf::Color::Transparent, 0.1);
 			}
 		}
 		else if (verticalPosition >= ENTITY_FALLEN_DEPTH) {

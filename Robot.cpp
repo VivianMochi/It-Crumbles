@@ -68,6 +68,7 @@ void Robot::update(sf::Time elapsed) {
 			frame++;
 			if (frame >= 4) {
 				frame -= 4;
+				map->createDust(getPosition(), -vm::normalize(velocity));
 			}
 		}
 	}

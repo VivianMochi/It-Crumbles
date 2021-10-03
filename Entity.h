@@ -13,6 +13,7 @@ public:
 	virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 	void moveWithCollision(sf::Vector2f delta);
 	virtual void dealDamage(float amount, sf::Vector2f direction = sf::Vector2f(), std::string damageType = "");
+	virtual void onDeath();
 
 	// Construction
 	void setMaxHealth(int maxHealth);
@@ -37,6 +38,7 @@ public:
 	float verticalVelocity = 0;
 	float maxHealth = 1000000;
 	float health = 1000000;
+	float damageTimer = 0;
 	bool dead = false;
 	bool falling = false;
 	bool canRocket = true;
