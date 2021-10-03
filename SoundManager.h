@@ -3,7 +3,7 @@
 #include <SFML/Audio.hpp>
 #include <deque>
 
-const int MAX_SOUNDS = 200;
+const int MAX_SOUNDS = 20;
 
 class SoundManager {
 public:

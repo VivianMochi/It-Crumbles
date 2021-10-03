@@ -17,11 +17,11 @@ void TowerState::init() {
 	robot->installBrain(std::make_shared<PlayerBrain>());
 	robot->setPosition(200, 300);
 
-	int totalFloors = 5;
+	int totalFloors = 6;
 	sf::Vector2i lastLauncher = sf::Vector2i(19, 29);
 	for (int i = 0; i < totalFloors; i++) {
 		floors.push_back(std::make_shared<Map>());
-		lastLauncher = floors.back()->generateMap(lastLauncher);
+		lastLauncher = floors.back()->generateMap(lastLauncher, i);
 	}
 	changeFloor(0);
 

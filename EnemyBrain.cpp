@@ -12,7 +12,7 @@ EnemyBrain::EnemyBrain() {
 
 void EnemyBrain::update(sf::Time elapsed) {
 	std::shared_ptr<Entity> target = entity->map->getNearestEnemy(entity->getPosition(), 70);
-	if (target) {
+	if (target && !target->isRocketing()) {
 		// Keep range and shoot enemy
 		orbitAngle += orbitSpeed * elapsed.asSeconds();
 		sf::Vector2f desiredPosition = target->getPosition() + vm::rotate(sf::Vector2f(desiredRange, 0), orbitAngle);
@@ -20,7 +20,7 @@ void EnemyBrain::update(sf::Time elapsed) {
 		entity->aimDirection = target->getPosition() - entity->getPosition();
 
 		targetCounter += elapsed.asSeconds();
-		entity->fireControl = targetCounter >= 1;
+		entity->fireControl = targetCounter >= 0.5;
 	}
 	else {
 		targetCounter = 0;

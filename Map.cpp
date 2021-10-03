@@ -4,6 +4,7 @@
 #include "Smoke.h"
 #include "EnemyBrain.h"
 #include "Slime.h"
+#include "Constants.h"
 
 bool blockSortFunction(Block &first, Block &second) {
 	return first.position.y < second.position.y;
@@ -71,15 +72,21 @@ void Map::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 	}
 }
 
-sf::Vector2i Map::generateMap(sf::Vector2i lowerLauncherPosition) {
-	float bigBlockRate = 0.8;
-	float wallRate = 0;
-	float enemyRate = 0;
-	float damageRate = 0;
+sf::Vector2i Map::generateMap(sf::Vector2i lowerLauncherPosition, float difficulty) {
+	float bigBlockRate = 0.8 - difficulty / 6.0f;
+	float wallRate = 0.1 * difficulty;
+	float enemyRate = 0.2 * difficulty;
+	float damageRate = 0.2 * difficulty;
+	if (difficulty == 5) {
+		bigBlockRate = 0.1;
+		wallRate = 0;
+		damageRate = 0;
+	}
 
 	// Generate the well to the lower floor
 	if (lowerLauncherPosition != sf::Vector2i(-1, -1)) {
 		blocks.emplace_back(lowerLauncherPosition, true);
+		blocks.back().color = floorColors[difficulty];
 	}
 
 	// Generate big blocks
@@ -89,6 +96,7 @@ sf::Vector2i Map::generateMap(sf::Vector2i lowerLauncherPosition) {
 		sf::Vector2i position = sf::Vector2i(std::rand() % (MAP_SIZE.x - 1), std::rand() % (MAP_SIZE.y - 1));
 		if (isAreaEmpty(position)) {
 			blocks.emplace_back(position, true);
+			blocks.back().color = floorColors[difficulty];
 			if (first) {
 				blocks.back().immune = true;
 				blocks.back().launcher = true;
@@ -103,6 +111,7 @@ sf::Vector2i Map::generateMap(sf::Vector2i lowerLauncherPosition) {
 		for (int x = 0; x < MAP_SIZE.x; x++) {
 			if (!getBlockAt(sf::Vector2i(x, y))) {
 				blocks.emplace_back(sf::Vector2i(x, y));
+				blocks.back().color = floorColors[difficulty];
 			}
 		}
 	}
@@ -129,7 +138,7 @@ sf::Vector2i Map::generateMap(sf::Vector2i lowerLauncherPosition) {
 			if (!block->immune) {
 				block->wall = true;
 				block->verticalPosition = -WALL_HEIGHT;
-				block->color = sf::Color(150, 150, 150);
+				block->color = sf::Color(floorColors[difficulty].r / 2, floorColors[difficulty].g / 2, floorColors[difficulty].b / 2);
 			}
 		}
 	}
@@ -139,7 +148,17 @@ sf::Vector2i Map::generateMap(sf::Vector2i lowerLauncherPosition) {
 
 	// Do initial damage
 	for (int i = 0; i < MAP_SIZE.x * MAP_SIZE.y / 20 * damageRate; i++) {
-		createExplosion(getEmptySpot(), std::rand() % 10 + 2, std::rand() % 60 + 10);
+		float thisDamage = std::rand() % 10 + 2;
+		for (Block *block : getBlocksWithinRadius(getEmptySpot(), std::rand() % 60 + 10)) {
+			if (!block->immune) {
+				block->health -= thisDamage;
+				if (block->health <= 0) {
+					block->fallCounter = CRUMBLE_TIME;
+					block->verticalPosition = BLOCK_FALLEN_DEPTH;
+					block->fallen = true;
+				}
+			}
+		}
 	}
 
 	// Place down a bunch of enemies
