@@ -18,7 +18,7 @@ public:
 	virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
 	// Map generation
-	void generateMap();
+	sf::Vector2i generateMap(sf::Vector2i lowerLauncherPosition = sf::Vector2i(-1, -1));
 
 	// Map helpers
 	Block *getBlockAt(sf::Vector2i position);

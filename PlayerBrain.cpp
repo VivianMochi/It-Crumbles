@@ -31,7 +31,6 @@ void PlayerBrain::update(sf::Time elapsed) {
 	// Aim direction is computed in the state that owns the robot
 
 	entity->fireControl = sf::Mouse::isButtonPressed(sf::Mouse::Left);
-	entity->dodgeControl = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
-	entity->abilityControl = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
-	entity->bombControl = sf::Mouse::isButtonPressed(sf::Mouse::Right);
+	entity->jumpControl = sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
+	entity->abilityControl = sf::Mouse::isButtonPressed(sf::Mouse::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::E);
 }

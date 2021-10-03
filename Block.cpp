@@ -27,7 +27,9 @@ void Block::update(sf::Time elapsed) {
 		damageEvent->delay -= elapsed.asSeconds();
 		if (damageEvent->delay <= 0) {
 			if (health > 0) {
-				health -= damageEvent->amount;
+				if (!immune) {
+					health -= damageEvent->amount;
+				}
 				verticalVelocity = 20 + (std::rand() % 5);
 				if (health < 0) {
 					health = 0;
@@ -61,10 +63,19 @@ void Block::update(sf::Time elapsed) {
 		verticalVelocity += GRAVITY * elapsed.asSeconds();
 	}
 	else {
-		verticalVelocity += (desiredVerticalPosition - verticalPosition) * elapsed.asSeconds() * 300;
-		verticalVelocity = verticalVelocity * std::pow(0.01, elapsed.asSeconds());
+		if (easingToPosition) {
+			verticalVelocity += ((desiredVerticalPosition - verticalPosition) * 2 - verticalVelocity) * elapsed.asSeconds() * 10;
+		}
+		else {
+			verticalVelocity += (desiredVerticalPosition - verticalPosition) * elapsed.asSeconds() * 300;
+			verticalVelocity = verticalVelocity * std::pow(0.01, elapsed.asSeconds());
+		}
 	}
 	verticalPosition += elapsed.asSeconds() * verticalVelocity;
+	if (easingToPosition && std::abs(desiredVerticalPosition - verticalPosition) < 1) {
+		verticalPosition = desiredVerticalPosition;
+		easingToPosition = false;
+	}
 
 	// Update color
 	if (verticalPosition >= BLOCK_FALLEN_DEPTH) {
@@ -78,17 +89,26 @@ void Block::update(sf::Time elapsed) {
 	}
 
 	// Update sprite
-	int damageIndex = 0;
-	if (health <= 0) {
-		damageIndex = 3;
+	if (immune) {
+		int frame = 0;
+		if (launcher) {
+			frame = 1;
+		}
+		sprite.setTextureRect(sf::IntRect(frame * size, size + DEPTH_SIZE, size, size + DEPTH_SIZE));
 	}
-	else if (health <= 0.35 * maxHealth) {
-		damageIndex = 2;
+	else {
+		int damageIndex = 0;
+		if (health <= 0) {
+			damageIndex = 3;
+		}
+		else if (health <= 0.35 * maxHealth) {
+			damageIndex = 2;
+		}
+		else if (health <= 0.75 * maxHealth) {
+			damageIndex = 1;
+		}
+		sprite.setTextureRect(sf::IntRect(damageIndex * size, 0, size, size + DEPTH_SIZE));
 	}
-	else if (health <= 0.75 * maxHealth) {
-		damageIndex = 1;
-	}
-	sprite.setTextureRect(sf::IntRect(damageIndex * size, 0, size, size + DEPTH_SIZE));
 	sprite.setColor(color);
 }
 

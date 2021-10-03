@@ -37,11 +37,14 @@ public:
 	float maxHealth;
 	float health;
 	sf::Color color = sf::Color::White;
+	bool immune = false;
+	bool launcher = false;
 
 	float fallCounter = 0;
 	bool fallen = false;
 	float verticalPosition = 0;
 	float verticalVelocity = 0;
+	bool easingToPosition = false;
 
 	std::vector<damageEvent> damageEvents;
 

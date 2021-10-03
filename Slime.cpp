@@ -25,7 +25,7 @@ void Slime::update(sf::Time elapsed) {
 			sf::Vector2f desiredVelocity = moveDirection * moveSpeed;
 			velocity += (desiredVelocity - velocity) * elapsed.asSeconds() * (onGround() ? groundAcceleration : airAcceleration);
 
-			if (dodgeControl && onGround()) {
+			if (jumpControl && onGround()) {
 				verticalVelocity = -20;
 			}
 		}

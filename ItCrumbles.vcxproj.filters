@@ -96,6 +96,9 @@
     <ClCompile Include="SoundManager.cpp">
       <Filter>Source Files\Basecode</Filter>
     </ClCompile>
+    <ClCompile Include="BitmapText.cpp">
+      <Filter>Source Files\Basecode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -151,6 +154,9 @@
     </ClInclude>
     <ClInclude Include="Slime.h">
       <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="BitmapText.h">
+      <Filter>Header Files\Basecode</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

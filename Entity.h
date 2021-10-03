@@ -52,8 +52,7 @@ public:
 	sf::Vector2f moveDirection;
 	sf::Vector2f aimDirection;
 	bool fireControl = false;
-	bool dodgeControl = false;
+	bool jumpControl = false;
 	bool abilityControl = false;
-	bool bombControl = false;
 };
 

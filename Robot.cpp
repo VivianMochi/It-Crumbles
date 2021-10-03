@@ -25,8 +25,17 @@ void Robot::update(sf::Time elapsed) {
 			sf::Vector2f desiredVelocity = moveDirection * moveSpeed;
 			velocity += (desiredVelocity - velocity) * elapsed.asSeconds() * (onGround() ? groundAcceleration : airAcceleration);
 
-			if (dodgeControl && onGround()) {
-				verticalVelocity = -20;
+			if (jumpControl && onGround()) {
+				Block *standingOn = map->getBlockAt(getPosition());
+				if (standingOn && standingOn->launcher) {
+					verticalVelocity = -200;
+					velocity = sf::Vector2f();
+					rocketTime = 10;
+					standingOn->verticalVelocity = -100;
+				}
+				else {
+					verticalVelocity = -20;
+				}
 			}
 		}
 
@@ -38,7 +47,7 @@ void Robot::update(sf::Time elapsed) {
 			map->sounds.playSound("Shoot", 100, -1);
 		}
 
-		if (bombControl && bombCooldown <= 0) {
+		if (abilityControl && bombCooldown <= 0) {
 			bombCooldown = bombMaxCooldown;
 			sf::Vector2f bombPosition = getPosition() + vm::normalize(aimDirection);
 			sf::Vector2f bombVelocity = aimDirection;

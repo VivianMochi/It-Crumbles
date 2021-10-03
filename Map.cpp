@@ -71,17 +71,30 @@ void Map::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 	}
 }
 
-void Map::generateMap() {
+sf::Vector2i Map::generateMap(sf::Vector2i lowerLauncherPosition) {
 	float bigBlockRate = 0.8;
-	float wallRate = 0.5;
-	float enemyRate = 0.5;
+	float wallRate = 0;
+	float enemyRate = 0;
 	float damageRate = 0;
 
+	// Generate the well to the lower floor
+	if (lowerLauncherPosition != sf::Vector2i(-1, -1)) {
+		blocks.emplace_back(lowerLauncherPosition, true);
+	}
+
 	// Generate big blocks
+	bool first = true;
+	sf::Vector2i launcherPosition;
 	for (int tries = MAP_SIZE.x * MAP_SIZE.y / 4 * bigBlockRate; tries > 0; tries--) {
 		sf::Vector2i position = sf::Vector2i(std::rand() % (MAP_SIZE.x - 1), std::rand() % (MAP_SIZE.y - 1));
 		if (isAreaEmpty(position)) {
 			blocks.emplace_back(position, true);
+			if (first) {
+				blocks.back().immune = true;
+				blocks.back().launcher = true;
+				launcherPosition = position;
+				first = false;
+			}
 		}
 	}
 
@@ -94,6 +107,16 @@ void Map::generateMap() {
 		}
 	}
 
+	// Make launcher areas immune
+	if (lowerLauncherPosition != sf::Vector2i(-1, -1)) {
+		for (Block *block : getBlocksWithinBox(lowerLauncherPosition - sf::Vector2i(1, 1), sf::Vector2i(4, 4))) {
+			block->immune = true;
+		}
+	}
+	for (Block *block : getBlocksWithinBox(launcherPosition - sf::Vector2i(1, 1), sf::Vector2i(4, 4))) {
+		block->immune = true;
+	}
+
 	// Make walls
 	for (int walls = (MAP_SIZE.x + MAP_SIZE.y) / 2 * wallRate; walls > 0; walls--) {
 		sf::Vector2i size = sf::Vector2i(std::rand() % ((MAP_SIZE.x + MAP_SIZE.y) / 4) + 5, std::rand() % 3 + 1);
@@ -103,9 +126,11 @@ void Map::generateMap() {
 		sf::Vector2i position = sf::Vector2i(std::rand() % (MAP_SIZE.x - size.x + 1), std::rand() % (MAP_SIZE.y - size.y + 1));
 
 		for (Block *block : getBlocksWithinBox(position, size)) {
-			block->wall = true;
-			block->verticalPosition = -WALL_HEIGHT;
-			block->color = sf::Color(150, 150, 150);
+			if (!block->immune) {
+				block->wall = true;
+				block->verticalPosition = -WALL_HEIGHT;
+				block->color = sf::Color(150, 150, 150);
+			}
 		}
 	}
 
@@ -123,6 +148,9 @@ void Map::generateMap() {
 		slime->installBrain(std::make_shared<EnemyBrain>());
 		addEntity(slime);
 	}
+
+	// Return the launcher position for use in the next floor's generation
+	return launcherPosition;
 }
 
 Block *Map::getBlockAt(sf::Vector2i position) {
@@ -226,7 +254,11 @@ sf::Vector2f Map::getEmptySpot() {
 }
 
 void Map::addEntity(std::shared_ptr<Entity> entity) {
-	entitiesToAdd.push_back(entity);
+	if (std::find(entities.begin(), entities.end(), entity) == entities.end()) {
+		if (std::find(entitiesToAdd.begin(), entitiesToAdd.end(), entity) == entitiesToAdd.end()) {
+			entitiesToAdd.push_back(entity);
+		}
+	}
 	entity->map = this;
 }
 

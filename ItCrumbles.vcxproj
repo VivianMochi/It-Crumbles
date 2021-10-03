@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BitmapText.cpp" />
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="Bomb.cpp" />
     <ClCompile Include="Brain.cpp" />
@@ -158,6 +159,7 @@
     <ClCompile Include="TowerState.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BitmapText.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="Bomb.h" />
     <ClInclude Include="Brain.h" />
