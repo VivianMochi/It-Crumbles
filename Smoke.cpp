@@ -17,7 +17,7 @@ Smoke::Smoke(sf::Vector2f position, sf::Vector2f velocity, float radius, float l
 		sprite.setRadius(radius);
 	}
 	sprite.setOrigin(sprite.getRadius(), sprite.getRadius() * 2);
-	sprite.setFillColor(color);
+	sprite.setFillColor(getFallingColor(color));
 	sprite.setPosition(std::round(getPosition().x), std::round(getPosition().y + verticalPosition));
 }
 
@@ -33,8 +33,8 @@ void Smoke::update(sf::Time elapsed) {
 		dead = true;
 	}
 	sprite.setOrigin(sprite.getRadius(), sprite.getRadius() * 2);
-	sprite.setFillColor(color);
 	sprite.setPosition(std::round(getPosition().x), std::round(getPosition().y + verticalPosition));
+	sprite.setFillColor(getFallingColor(color));
 }
 
 void Smoke::draw(sf::RenderTarget &target, sf::RenderStates states) const {

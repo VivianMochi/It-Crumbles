@@ -48,6 +48,8 @@ void Bomb::update(sf::Time elapsed) {
 		sprite.setOutlineColor(sf::Color::White);
 	}
 	sprite.setPosition(std::round(getPosition().x), std::round(getPosition().y + verticalPosition));
+	sprite.setFillColor(getFallingColor(sprite.getFillColor()));
+	sprite.setOutlineColor(getFallingColor(sprite.getOutlineColor()));
 }
 
 void Bomb::draw(sf::RenderTarget &target, sf::RenderStates states) const {

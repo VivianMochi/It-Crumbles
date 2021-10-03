@@ -168,6 +168,20 @@ sf::FloatRect Entity::getFloorHitbox() {
 	return sf::FloatRect(hitboxPosition, hitboxSize);
 }
 
+sf::Color Entity::getFallingColor(sf::Color color) {
+	float fadeStart = 5;
+	if (verticalPosition >= BLOCK_FALLEN_DEPTH) {
+		color.a = 0;
+	}
+	else if (verticalPosition >= fadeStart) {
+		color.a = (BLOCK_FALLEN_DEPTH - verticalPosition) / (BLOCK_FALLEN_DEPTH - fadeStart) * 255;
+	}
+	else {
+		color.a = 255;
+	}
+	return color;
+}
+
 bool Entity::haveControl() const {
 	return !falling && !dead;
 }

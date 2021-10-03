@@ -95,6 +95,7 @@ void Robot::update(sf::Time elapsed) {
 	}
 	sprite.setScale(facingRight ? 1 : -1, 1);
 	sprite.setPosition(std::round(getPosition().x), std::round(getPosition().y + verticalPosition));
+	sprite.setColor(getFallingColor());
 }
 
 void Robot::draw(sf::RenderTarget &target, sf::RenderStates states) const {

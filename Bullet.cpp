@@ -77,6 +77,8 @@ void Bullet::update(sf::Time elapsed) {
 	// Update sprite
 	sprite.setRadius(sprite.getRadius() + (2 - sprite.getRadius()) * elapsed.asSeconds() * 10);
 	sprite.setPosition(std::round(getPosition().x), std::round(getPosition().y + verticalPosition));
+	sprite.setFillColor(getFallingColor(sprite.getFillColor()));
+	sprite.setOutlineColor(getFallingColor(sprite.getOutlineColor()));
 }
 
 void Bullet::draw(sf::RenderTarget &target, sf::RenderStates states) const {

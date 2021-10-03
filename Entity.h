@@ -20,6 +20,7 @@ public:
 
 	// Helpers
 	sf::FloatRect getFloorHitbox();
+	sf::Color getFallingColor(sf::Color color = sf::Color::White);
 
 	// Checks
 	bool haveControl() const;
