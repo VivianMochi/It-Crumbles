@@ -5,13 +5,13 @@
 #include "Map.h"
 
 EnemyBrain::EnemyBrain() {
-	desiredRange = 10 + std::rand() % 45;
+	desiredRange = 20 + std::rand() % 55;
 	orbitSpeed = std::rand() % 100 / 100.0f * 2 - 1;
 	orbitAngle = std::rand() % 100 / 100.0f * 2 * 3.14159;
 }
 
 void EnemyBrain::update(sf::Time elapsed) {
-	std::shared_ptr<Entity> target = entity->map->getNearestEnemy(entity->getPosition(), 50);
+	std::shared_ptr<Entity> target = entity->map->getNearestEnemy(entity->getPosition(), 70);
 	if (target) {
 		// Keep range and shoot enemy
 		orbitAngle += orbitSpeed * elapsed.asSeconds();

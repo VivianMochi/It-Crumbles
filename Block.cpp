@@ -112,9 +112,9 @@ bool Block::isBlocking() const {
 	return wall && verticalPosition <= WALL_HEIGHT / 2;
 }
 
-void Block::damage(float damage, float delay) {
+void Block::dealDamage(float amount, float delay) {
 	damageEvent newEvent;
-	newEvent.amount = damage;
+	newEvent.amount = amount;
 	newEvent.delay = delay;
 	damageEvents.push_back(newEvent);
 }

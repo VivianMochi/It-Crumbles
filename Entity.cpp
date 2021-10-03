@@ -123,6 +123,20 @@ void Entity::moveWithCollision(sf::Vector2f delta) {
 	}
 }
 
+void Entity::dealDamage(float amount, sf::Vector2f direction, std::string damageType) {
+	health -= amount;
+	if (health <= 0) {
+		dead = true;
+	}
+	// Todo: this may be too strong
+	velocity += direction * amount * 50.f;
+}
+
+void Entity::setMaxHealth(int maxHealth) {
+	this->maxHealth = maxHealth;
+	health = maxHealth;
+}
+
 void Entity::installBrain(std::shared_ptr<Brain> brain) {
 	this->brain = brain;
 	this->brain->entity = this;

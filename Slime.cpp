@@ -8,6 +8,7 @@
 Slime::Slime(sf::Vector2f position) {
 	setPosition(position);
 	size = sf::Vector2f(6, 6);
+	setMaxHealth(5);
 
 	sprite.setTexture(rm::loadTexture("Resource/Image/Slime.png"));
 	sprite.setTextureRect(sf::IntRect(sf::Vector2i(), SLIME_FRAME_SIZE));
@@ -30,9 +31,14 @@ void Slime::update(sf::Time elapsed) {
 
 	if (fireControl && fireCooldown <= 0) {
 		fireCooldown = fireMaxCooldown;
+		float bulletSpeed = 30;
+		float aimDeviation = 0.5;
+		float damage = 1;
 		sf::Vector2f bulletPosition = getPosition() + vm::normalize(aimDirection) * 6.0f;
-		sf::Vector2f bulletVelocity = vm::rotate(vm::normalize(aimDirection) * 100.0f, std::rand() % 101 / 100.0f * 0.1 - 0.05);
-		map->addEntity(std::make_shared<Bullet>(bulletPosition, bulletVelocity, 1, true, verticalPosition));
+		sf::Vector2f bulletVelocity = vm::rotate(vm::normalize(aimDirection) * bulletSpeed, std::rand() % 101 / 100.0f * aimDeviation - aimDeviation / 2);
+		std::shared_ptr<Bullet> newBullet = std::make_shared<Bullet>(bulletPosition, bulletVelocity, damage, true, verticalPosition);
+		newBullet->flightTime = 0.8;
+		map->addEntity(newBullet);
 	}
 
 	Entity::update(elapsed);

@@ -197,7 +197,7 @@ std::shared_ptr<Entity> Map::getNearestEnemy(sf::Vector2f position, float range,
 	for (auto &entity : entities) {
 		if (entity->brain && entity->brain->enemy == evil) {
 			float thisDistance = vm::magnitude(entity->getPosition() - position);
-			if (thisDistance < lastDistance) {
+			if (thisDistance <= lastDistance) {
 				lastDistance = thisDistance;
 				output = entity;
 			}
@@ -225,13 +225,14 @@ void Map::createExplosion(sf::Vector2f position, float damage, float radius) {
 	// Damage blocks
 	for (Block *block : getBlocksWithinRadius(position, radius)) {
 		float distance = vm::magnitude(block->getCenter() - position);
-		block->damage(damage, distance / rippleSpeed);
+		block->dealDamage(damage, distance / rippleSpeed);
 	}
 
-	// Push entities
+	// Damage entities
 	for (auto &entity : entities) {
 		if (vm::magnitude(entity->getPosition() - position) <= radius) {
 			sf::Vector2f direction = vm::normalize(entity->getPosition() - position);
+			entity->dealDamage(damage, direction, "Explosion");
 			entity->velocity = direction * 100.0f;
 			entity->verticalVelocity = -40 - std::rand() % 5;
 			entity->rocketTime = 1;

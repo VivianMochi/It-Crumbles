@@ -2,12 +2,11 @@
 
 #include "Map.h"
 
-Bomb::Bomb(sf::Vector2f position, sf::Vector2f velocity, float damage, float radius, bool evil, bool raised, float verticalOffset) {
+Bomb::Bomb(sf::Vector2f position, sf::Vector2f velocity, float damage, float radius, bool raised, float verticalOffset) {
 	setPosition(position);
 	this->velocity = velocity;
 	this->damage = damage;
 	this->radius = radius;
-	this->evil = evil;
 	size = sf::Vector2f(6, 6);
 	if (raised) {
 		verticalVelocity = -10;

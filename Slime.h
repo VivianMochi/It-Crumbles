@@ -16,7 +16,7 @@ public:
 	float groundAcceleration = 15;
 	float airAcceleration = 1;
 
-	float fireMaxCooldown = 0.5;
+	float fireMaxCooldown = 1;
 	float fireCooldown = 0;
 
 	bool facingRight = true;

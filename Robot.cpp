@@ -40,7 +40,7 @@ void Robot::update(sf::Time elapsed) {
 		bombCooldown = bombMaxCooldown;
 		sf::Vector2f bombPosition = getPosition() + vm::normalize(aimDirection);
 		sf::Vector2f bombVelocity = aimDirection;
-		map->addEntity(std::make_shared<Bomb>(bombPosition, bombVelocity, 8, 30, false, true, verticalPosition));
+		map->addEntity(std::make_shared<Bomb>(bombPosition, bombVelocity, 8, 30, true, verticalPosition));
 	}
 
 	Entity::update(elapsed);
@@ -99,4 +99,11 @@ void Robot::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 	Entity::draw(target, states);
 
 	target.draw(sprite, states);
+}
+
+void Robot::dealDamage(float amount, sf::Vector2f direction, std::string damageType) {
+	// The robot doesn't take damage, it creates an explosion instead
+	if (damageType != "Explosion") {
+		map->createExplosion(getPosition() - vm::normalize(direction), 15, 20);
+	}
 }

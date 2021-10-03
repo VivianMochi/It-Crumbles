@@ -12,7 +12,10 @@ public:
 	virtual void update(sf::Time elapsed);
 	virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 	void moveWithCollision(sf::Vector2f delta);
+	virtual void dealDamage(float amount, sf::Vector2f direction = sf::Vector2f(), std::string damageType = "");
 
+	// Construction
+	void setMaxHealth(int maxHealth);
 	void installBrain(std::shared_ptr<Brain> brain);
 
 	// Checks
@@ -26,6 +29,8 @@ public:
 	sf::Vector2f velocity;
 	float verticalPosition = 0;
 	float verticalVelocity = 0;
+	float maxHealth = 1000000;
+	float health = 1000000;
 	bool dead = false;
 	float rocketTime = 0;
 	float rocketSmokeCooldown = 0;

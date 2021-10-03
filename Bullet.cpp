@@ -12,14 +12,14 @@ Bullet::Bullet(sf::Vector2f position, sf::Vector2f velocity, float damage, bool 
 	size = sf::Vector2f(2, 2);
 	verticalPosition = -4 + verticalOffset;
 
-	sprite.setRadius(2);
+	sprite.setRadius(1);
 	sprite.setOrigin(sprite.getRadius(), sprite.getRadius());
 	if (evil) {
-		sprite.setFillColor(sf::Color::Red);
+		sprite.setFillColor(sf::Color(0x891F1FFF));
 		sprite.setOutlineColor(sf::Color::White);
 	}
 	else {
-		sprite.setFillColor(sf::Color::Red);
+		sprite.setFillColor(sf::Color(0x005777FF));
 		sprite.setOutlineColor(sf::Color::White);
 	}
 	sprite.setOutlineThickness(1);
@@ -46,12 +46,20 @@ void Bullet::update(sf::Time elapsed) {
 	}
 	move(velocity * elapsed.asSeconds());
 
+	// Collide with enemies
+	float collideDistance = 6;
+	std::shared_ptr<Entity> entityCollision = map->getNearestEnemy(getPosition(), collideDistance, !evil);
+	if (entityCollision && std::abs(entityCollision->verticalPosition - verticalPosition) <= collideDistance) {
+		dead = true;
+		entityCollision->dealDamage(damage, vm::normalize(velocity));
+	}
+
 	// Collide with wall
 	if (verticalPosition >= -WALL_HEIGHT * 2) {
 		Block *wallCollision = map->getBlockAt(getPosition());
 		if (wallCollision && wallCollision->isBlocking()) {
 			dead = true;
-			wallCollision->damage(damage);
+			wallCollision->dealDamage(damage);
 		}
 	}
 
@@ -60,11 +68,12 @@ void Bullet::update(sf::Time elapsed) {
 		dead = true;
 		Block *groundCollision = map->getBlockAt(getPosition());
 		if (groundCollision) {
-			groundCollision->damage(damage);
+			groundCollision->dealDamage(damage);
 		}
 	}
 
 	// Update sprite
+	sprite.setRadius(sprite.getRadius() + (2 - sprite.getRadius()) * elapsed.asSeconds() * 10);
 	sprite.setPosition(std::round(getPosition().x), std::round(getPosition().y + verticalPosition));
 }
 

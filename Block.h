@@ -29,7 +29,7 @@ public:
 	bool isBlocking() const;
 
 	// Interaction
-	void damage(float damage, float delay = 0);
+	void dealDamage(float amount, float delay = 0);
 
 	sf::Vector2i position;
 	bool big;

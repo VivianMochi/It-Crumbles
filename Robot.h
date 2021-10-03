@@ -10,6 +10,7 @@ public:
 
 	virtual void update(sf::Time elapsed) override;
 	virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
+	virtual void dealDamage(float amount, sf::Vector2f direction = sf::Vector2f(), std::string damageType = "") override;
 
 	// Stats
 	float moveSpeed = 80;
