@@ -151,6 +151,7 @@
     <ClCompile Include="PlayerBrain.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Robot.cpp" />
+    <ClCompile Include="Slime.cpp" />
     <ClCompile Include="Smoke.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="TowerState.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="PlayerBrain.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Robot.h" />
+    <ClInclude Include="Slime.h" />
     <ClInclude Include="Smoke.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="TowerState.h" />

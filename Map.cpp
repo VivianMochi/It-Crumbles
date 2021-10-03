@@ -2,6 +2,8 @@
 
 #include "Helpers.h"
 #include "Smoke.h"
+#include "EnemyBrain.h"
+#include "Slime.h"
 
 bool blockSortFunction(Block &first, Block &second) {
 	return first.position.y < second.position.y;
@@ -69,22 +71,21 @@ void Map::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 }
 
 void Map::generateMap() {
-	sf::Vector2i mapSize = { 40, 40 };
-
 	float bigBlockRate = 0.8;
 	float wallRate = 0.5;
+	float enemyRate = 1;
 
 	// Generate big blocks
-	for (int tries = mapSize.x * mapSize.y / 4 * bigBlockRate; tries > 0; tries--) {
-		sf::Vector2i position = sf::Vector2i(std::rand() % (mapSize.x - 1), std::rand() % (mapSize.y - 1));
+	for (int tries = MAP_SIZE.x * MAP_SIZE.y / 4 * bigBlockRate; tries > 0; tries--) {
+		sf::Vector2i position = sf::Vector2i(std::rand() % (MAP_SIZE.x - 1), std::rand() % (MAP_SIZE.y - 1));
 		if (isAreaEmpty(position)) {
 			blocks.emplace_back(position, true);
 		}
 	}
 
 	// Fill with small blocks
-	for (int y = 0; y < mapSize.y; y++) {
-		for (int x = 0; x < mapSize.x; x++) {
+	for (int y = 0; y < MAP_SIZE.y; y++) {
+		for (int x = 0; x < MAP_SIZE.x; x++) {
 			if (!getBlockAt(sf::Vector2i(x, y))) {
 				blocks.emplace_back(sf::Vector2i(x, y));
 			}
@@ -92,12 +93,12 @@ void Map::generateMap() {
 	}
 
 	// Make walls
-	for (int walls = (mapSize.x + mapSize.y) / 2 * wallRate; walls > 0; walls--) {
-		sf::Vector2i size = sf::Vector2i(std::rand() % ((mapSize.x + mapSize.y) / 4) + 5, std::rand() % 3 + 1);
+	for (int walls = (MAP_SIZE.x + MAP_SIZE.y) / 2 * wallRate; walls > 0; walls--) {
+		sf::Vector2i size = sf::Vector2i(std::rand() % ((MAP_SIZE.x + MAP_SIZE.y) / 4) + 5, std::rand() % 3 + 1);
 		if (std::rand() % 2) {
 			std::swap(size.x, size.y);
 		}
-		sf::Vector2i position = sf::Vector2i(std::rand() % (mapSize.x - size.x + 1), std::rand() % (mapSize.y - size.y + 1));
+		sf::Vector2i position = sf::Vector2i(std::rand() % (MAP_SIZE.x - size.x + 1), std::rand() % (MAP_SIZE.y - size.y + 1));
 
 		for (Block *block : getBlocksWithinBox(position, size)) {
 			block->wall = true;
@@ -108,6 +109,13 @@ void Map::generateMap() {
 
 	// Order the blocks by their y positions
 	std::sort(blocks.begin(), blocks.end(), blockSortFunction);
+
+	// Place down a bunch of enemies
+	for (int i = 0; i < MAP_SIZE.x * MAP_SIZE.y / 40 * enemyRate; i++) {
+		std::shared_ptr<Slime> slime = std::make_shared<Slime>(getEmptySpot());
+		slime->installBrain(std::make_shared<EnemyBrain>());
+		addEntity(slime);
+	}
 }
 
 Block *Map::getBlockAt(sf::Vector2i position) {
@@ -178,6 +186,32 @@ bool Map::checkBoxCollision(sf::Vector2f position, sf::Vector2f size) {
 		}
 	}
 	return false;
+}
+
+std::shared_ptr<Entity> Map::getNearestEnemy(sf::Vector2f position, float range, bool evil) {
+	float lastDistance = range;
+	std::shared_ptr<Entity> output = nullptr;
+	if (range == -1) {
+		lastDistance = 1000000;
+	}
+	for (auto &entity : entities) {
+		if (entity->brain && entity->brain->enemy == evil) {
+			float thisDistance = vm::magnitude(entity->getPosition() - position);
+			if (thisDistance < lastDistance) {
+				lastDistance = thisDistance;
+				output = entity;
+			}
+		}
+	}
+	return output;
+}
+
+sf::Vector2f Map::getEmptySpot() {
+	sf::Vector2f output = sf::Vector2f(-100, -100);
+	while (!getBlockAt(output) || getBlockAt(output)->wall) {
+		output = sf::Vector2f((std::rand() % MAP_SIZE.x) * TILE_SIZE + TILE_SIZE / 2, (std::rand() % MAP_SIZE.y) * TILE_SIZE + TILE_SIZE / 2);
+	}
+	return output;
 }
 
 void Map::addEntity(std::shared_ptr<Entity> entity) {

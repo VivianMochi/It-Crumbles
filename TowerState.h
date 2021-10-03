@@ -19,5 +19,7 @@ public:
 	std::vector<Map> floors;
 
 	std::shared_ptr<Robot> robot;
+
+	sf::Music music;
 };
 

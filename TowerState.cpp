@@ -17,6 +17,9 @@ void TowerState::init() {
 	robot = std::make_shared<Robot>();
 	robot->installBrain(std::make_shared<PlayerBrain>());
 	floors[0].addEntity(robot);
+
+	music.openFromFile("Resource/Music/TowerOfTheAncients.ogg");
+	//music.play();
 }
 
 void TowerState::gotEvent(sf::Event event) {

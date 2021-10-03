@@ -14,8 +14,14 @@ Bullet::Bullet(sf::Vector2f position, sf::Vector2f velocity, float damage, bool 
 
 	sprite.setRadius(2);
 	sprite.setOrigin(sprite.getRadius(), sprite.getRadius());
-	sprite.setFillColor(sf::Color::Red);
-	sprite.setOutlineColor(sf::Color::White);
+	if (evil) {
+		sprite.setFillColor(sf::Color::Red);
+		sprite.setOutlineColor(sf::Color::White);
+	}
+	else {
+		sprite.setFillColor(sf::Color::Red);
+		sprite.setOutlineColor(sf::Color::White);
+	}
 	sprite.setOutlineThickness(1);
 	sprite.setPosition(std::round(getPosition().x), std::round(getPosition().y + verticalPosition));
 }

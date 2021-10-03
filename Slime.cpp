@@ -1,23 +1,22 @@
-#include "Robot.h"
+#include "Slime.h"
 
 #include "Map.h"
-#include "Bullet.h"
-#include "Bomb.h"
-#include "Helpers.h"
 #include "ResourceManager.h"
+#include "Bullet.h"
+#include "Helpers.h"
 
-Robot::Robot() {
-	size = sf::Vector2f(6, 10);
+Slime::Slime(sf::Vector2f position) {
+	setPosition(position);
+	size = sf::Vector2f(6, 6);
 
-	sprite.setTexture(rm::loadTexture("Resource/Image/Robot.png"));
-	sprite.setTextureRect(sf::IntRect(sf::Vector2i(), ROBOT_FRAME_SIZE));
-	sprite.setOrigin(ROBOT_FRAME_SIZE.x / 2, ROBOT_FRAME_SIZE.y);
+	sprite.setTexture(rm::loadTexture("Resource/Image/Slime.png"));
+	sprite.setTextureRect(sf::IntRect(sf::Vector2i(), SLIME_FRAME_SIZE));
+	sprite.setOrigin(SLIME_FRAME_SIZE.x / 2, SLIME_FRAME_SIZE.y);
 }
 
-void Robot::update(sf::Time elapsed) {
+void Slime::update(sf::Time elapsed) {
 	// Tick cooldowns
 	fireCooldown -= elapsed.asSeconds();
-	bombCooldown -= elapsed.asSeconds();
 
 	// Control
 	if (!isRocketing()) {
@@ -33,14 +32,7 @@ void Robot::update(sf::Time elapsed) {
 		fireCooldown = fireMaxCooldown;
 		sf::Vector2f bulletPosition = getPosition() + vm::normalize(aimDirection) * 6.0f;
 		sf::Vector2f bulletVelocity = vm::rotate(vm::normalize(aimDirection) * 100.0f, std::rand() % 101 / 100.0f * 0.1 - 0.05);
-		map->addEntity(std::make_shared<Bullet>(bulletPosition, bulletVelocity, 3, false, verticalPosition));
-	}
-
-	if (bombControl && bombCooldown <= 0) {
-		bombCooldown = bombMaxCooldown;
-		sf::Vector2f bombPosition = getPosition() + vm::normalize(aimDirection);
-		sf::Vector2f bombVelocity = aimDirection;
-		map->addEntity(std::make_shared<Bomb>(bombPosition, bombVelocity, 8, 30, false, true, verticalPosition));
+		map->addEntity(std::make_shared<Bullet>(bulletPosition, bulletVelocity, 1, true, verticalPosition));
 	}
 
 	Entity::update(elapsed);
@@ -77,7 +69,7 @@ void Robot::update(sf::Time elapsed) {
 	if (isRocketing()) {
 		adjustedFrame += 4;
 	}
-	sprite.setTextureRect(sf::IntRect(sf::Vector2i(adjustedFrame * ROBOT_FRAME_SIZE.x, bombCooldown > 0 ? ROBOT_FRAME_SIZE.y : 0), ROBOT_FRAME_SIZE));
+	sprite.setTextureRect(sf::IntRect(sf::Vector2i(adjustedFrame * SLIME_FRAME_SIZE.x, 0), SLIME_FRAME_SIZE));
 
 	// Update sprite
 	if (isRocketing()) {
@@ -90,12 +82,20 @@ void Robot::update(sf::Time elapsed) {
 		else if (aimDirection.x < 0) {
 			facingRight = false;
 		}
+		else {
+			if (moveDirection.x > 0) {
+				facingRight = true;
+			}
+			else if (moveDirection.x < 0) {
+				facingRight = false;
+			}
+		}
 	}
 	sprite.setScale(facingRight ? 1 : -1, 1);
 	sprite.setPosition(std::round(getPosition().x), std::round(getPosition().y + verticalPosition));
 }
 
-void Robot::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+void Slime::draw(sf::RenderTarget & target, sf::RenderStates states) const {
 	Entity::draw(target, states);
 
 	target.draw(sprite, states);

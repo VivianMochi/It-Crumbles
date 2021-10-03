@@ -52,11 +52,11 @@ void Entity::update(sf::Time elapsed) {
 	// Create smoke if rocketing
 	float smokeRadius = size.y / 2;
 	if (isRocketing() && smokeRadius > 0 && rocketSmokeCooldown <= 0) {
-		rocketSmokeCooldown = 0.05 + std::rand() % 10 / 100.0f;
+		rocketSmokeCooldown = 0.05 + std::rand() % 5 / 100.0f;
 		sf::Vector2f smokeOffset = -vm::normalize(velocity);
 		sf::Vector2f smokePosition = getPosition() + smokeOffset;
 		sf::Vector2f smokeVelocity = sf::Vector2f(std::rand() % 11 - 5, std::rand() % 11 - 5);
-		float smokeLifespan = 0.4f + (std::rand() % 20 / 100.0f);
+		float smokeLifespan = 0.2f + (std::rand() % 20 / 100.0f);
 		map->addEntity(std::make_shared<Smoke>(smokePosition, smokeVelocity, smokeRadius, smokeLifespan, verticalPosition, sf::Color(30, 30, 30), false));
 	}
 }
