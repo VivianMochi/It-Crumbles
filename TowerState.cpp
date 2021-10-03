@@ -49,7 +49,7 @@ void TowerState::init() {
 	music.openFromFile("Resource/Music/TowerOfTheAncients.ogg");
 	music.setLoop(true);
 	music.setVolume(25);
-	//music.play();
+	music.play();
 }
 
 void TowerState::gotEvent(sf::Event event) {
@@ -60,8 +60,14 @@ void TowerState::gotEvent(sf::Event event) {
 		}
 	}
 	else if (event.type == sf::Event::KeyPressed) {
-		if (event.key.code == sf::Keyboard::Num1) {
-			getGame()->changeState(new TowerState());
+		bool debugEnabled = false;
+		if (debugEnabled) {
+			if (event.key.code == sf::Keyboard::Num1) {
+				getGame()->changeState(new TowerState());
+			}
+			if (event.key.code == sf::Keyboard::Num2) {
+				changeFloor(currentFloor + 1);
+			}
 		}
 	}
 }
@@ -152,4 +158,11 @@ void TowerState::changeFloor(int floor) {
 	else if (robot->getPosition().y > 400 - buffer) {
 		robot->setPosition(robot->getPosition().x, 400 - buffer);
 	}
+}
+
+void TowerState::createNotification(std::string text, sf::Color color) {
+	Notification notification;
+	notification.text = text;
+	notification.color = color;
+	notifications.push_back(notification);
 }

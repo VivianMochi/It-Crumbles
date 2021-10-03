@@ -6,14 +6,32 @@
 #include "Helpers.h"
 #include "Stats.h"
 
-Slime::Slime(sf::Vector2f position) {
+Slime::Slime(sf::Vector2f position, int type, float powerMultiplier) {
 	setPosition(position);
+	this->type = type;
 	size = sf::Vector2f(6, 6);
 	setMaxHealth(5);
 
-	sprite.setTexture(rm::loadTexture("Resource/Image/Slime.png"));
+	if (type == 1) {
+		sprite.setTexture(rm::loadTexture("Resource/Image/Bat.png"));
+		airAcceleration = 2;
+		moveSpeed = 35;
+		bulletDamage = 1;
+		bulletSpeed = 40;
+	}
+	else {
+		sprite.setTexture(rm::loadTexture("Resource/Image/Slime.png"));
+	}
 	sprite.setTextureRect(sf::IntRect(sf::Vector2i(), SLIME_FRAME_SIZE));
 	sprite.setOrigin(SLIME_FRAME_SIZE.x / 2, SLIME_FRAME_SIZE.y);
+
+	// Do power multiply
+	setMaxHealth(maxHealth * powerMultiplier);
+	moveSpeed *= powerMultiplier;
+	fireMaxCooldown /= powerMultiplier;
+	bulletSpeed *= powerMultiplier;
+	aimDeviation /= powerMultiplier;
+	bulletDamage *= powerMultiplier;
 }
 
 void Slime::update(sf::Time elapsed) {
@@ -29,17 +47,19 @@ void Slime::update(sf::Time elapsed) {
 			if (jumpControl && onGround()) {
 				verticalVelocity = -20;
 			}
+
+			if (type == 1) {
+				// Bats can fly
+				verticalVelocity += ((-4 - verticalPosition) * 2 - verticalVelocity) * elapsed.asSeconds() * 10;
+			}
 		}
 
 		if (fireControl && fireCooldown <= 0) {
 			fireCooldown = fireMaxCooldown;
-			float bulletSpeed = 30;
-			float aimDeviation = 0.5;
-			float damage = 1;
 			sf::Vector2f bulletPosition = getPosition() + vm::normalize(aimDirection) * 6.0f;
 			sf::Vector2f bulletVelocity = vm::rotate(vm::normalize(aimDirection) * bulletSpeed, std::rand() % 101 / 100.0f * aimDeviation - aimDeviation / 2);
-			std::shared_ptr<Bullet> newBullet = std::make_shared<Bullet>(bulletPosition, bulletVelocity, damage, true, verticalPosition);
-			newBullet->flightTime = 0.8;
+			std::shared_ptr<Bullet> newBullet = std::make_shared<Bullet>(bulletPosition, bulletVelocity, bulletDamage, true, verticalPosition);
+			newBullet->flightTime = bulletFlightTime;
 			map->addEntity(newBullet);
 		}
 	}
@@ -48,6 +68,16 @@ void Slime::update(sf::Time elapsed) {
 
 	// Update frame
 	if (isRocketing()) {
+		frameCounter += elapsed.asSeconds();
+		if (frameCounter >= 0.05) {
+			frameCounter -= 0.05;
+			frame++;
+			if (frame >= 4) {
+				frame -= 4;
+			}
+		}
+	}
+	else if (type == 1) {
 		frameCounter += elapsed.asSeconds();
 		if (frameCounter >= 0.05) {
 			frameCounter -= 0.05;

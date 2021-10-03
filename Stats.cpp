@@ -14,7 +14,9 @@ void initializeStats() {
 
 	stats["BulletCooldown"] = 0.5;
 	stats["BulletDamage"] = 3;
-	stats["BulletFlightTime"] = 3; // NOT USED
+	stats["BulletSpeed"] = 100;
+	stats["BulletFlightTime"] = 0.2;
+	stats["BulletDeviation"] = 0.1;
 
 	stats["BombCooldown"] = 4;
 	stats["BombFuse"] = 3;

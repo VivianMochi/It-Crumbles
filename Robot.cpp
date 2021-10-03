@@ -42,9 +42,12 @@ void Robot::update(sf::Time elapsed) {
 
 		if (fireControl && fireCooldown <= 0) {
 			fireCooldown = stats.at("BulletCooldown");
+			float aimDeviation = stats.at("BulletDeviation");
 			sf::Vector2f bulletPosition = getPosition() + vm::normalize(aimDirection) * 6.0f;
-			sf::Vector2f bulletVelocity = vm::rotate(vm::normalize(aimDirection) * 100.0f, std::rand() % 101 / 100.0f * 0.1 - 0.05);
-			map->addEntity(std::make_shared<Bullet>(bulletPosition, bulletVelocity, stats.at("BulletDamage"), false, verticalPosition));
+			sf::Vector2f bulletVelocity = vm::rotate(vm::normalize(aimDirection) * stats.at("BulletSpeed"), std::rand() % 101 / 100.0f * aimDeviation - aimDeviation / 2);
+			std::shared_ptr<Bullet> newBullet = std::make_shared<Bullet>(bulletPosition, bulletVelocity, stats.at("BulletDamage"), false, verticalPosition);
+			newBullet->flightTime = stats.at("BulletFlightTime");
+			map->addEntity(newBullet);
 			map->sounds.playSound("Shoot", 100, -1);
 		}
 

@@ -36,6 +36,9 @@ public:
 	void createExplosion(sf::Vector2f position, float damage, float radius);
 	void createDust(sf::Vector2f position, sf::Vector2f direction);
 	void createSplash(sf::Vector2f position, float radius, sf::Color color = sf::Color::Transparent, float fullness = 1);
+	void spawnEnemy(bool plummet = true);
+
+	float difficulty = 0;
 
 	float spawnRate = 10;
 	float spawnTimer = 0;

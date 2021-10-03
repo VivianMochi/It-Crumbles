@@ -4,6 +4,14 @@
 #include "Map.h"
 #include "BitmapText.h"
 
+struct Notification {
+	float y = 135;
+	std::string text;
+	sf::Color color;
+	float lifespan = 2;
+	float alpha = 255;
+};
+
 class TowerState : public State {
 public:
 	TowerState();
@@ -15,6 +23,8 @@ public:
 	void render(sf::RenderWindow &window) override;
 
 	void changeFloor(int floor);
+
+	void createNotification(std::string text, sf::Color color);
 
 	sf::Vector2f cameraPosition;
 
@@ -28,6 +38,7 @@ public:
 	sf::Sprite bombBar;
 	BitmapText floorText;
 	BitmapText tokenText;
+	std::vector<Notification> notifications;
 
 	sf::Music music;
 };

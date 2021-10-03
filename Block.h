@@ -39,6 +39,7 @@ public:
 	sf::Color color = sf::Color::White;
 	bool immune = false;
 	bool launcher = false;
+	bool victory = false;
 
 	float fallCounter = 0;
 	bool fallen = false;

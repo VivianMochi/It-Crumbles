@@ -91,7 +91,10 @@ void Block::update(sf::Time elapsed) {
 	// Update sprite
 	if (immune) {
 		int frame = 0;
-		if (launcher) {
+		if (victory) {
+			frame = 2;
+		}
+		else if (launcher) {
 			frame = 1;
 		}
 		sprite.setTextureRect(sf::IntRect(frame * size, size + DEPTH_SIZE, size, size + DEPTH_SIZE));

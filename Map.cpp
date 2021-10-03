@@ -23,10 +23,7 @@ void Map::update(sf::Time elapsed) {
 		if (spawnRate < 1) {
 			spawnRate = 1;
 		}
-		std::shared_ptr<Slime> slime = std::make_shared<Slime>(getEmptySpot());
-		slime->installBrain(std::make_shared<EnemyBrain>());
-		slime->plummet();
-		addEntity(slime);
+		spawnEnemy();
 	}
 
 	// Update blocks
@@ -87,6 +84,7 @@ void Map::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 }
 
 sf::Vector2i Map::generateMap(sf::Vector2i lowerLauncherPosition, float difficulty) {
+	this->difficulty = difficulty;
 	float bigBlockRate = 0.8 - difficulty / 6.0f;
 	float wallRate = 0.2 + 0.1 * difficulty;
 	float enemyRate = 0.4 + 0.2 * difficulty;
@@ -114,6 +112,9 @@ sf::Vector2i Map::generateMap(sf::Vector2i lowerLauncherPosition, float difficul
 			if (first) {
 				blocks.back().immune = true;
 				blocks.back().launcher = true;
+				if (difficulty == 5) {
+					blocks.back().victory = true;
+				}
 				launcherPosition = position;
 				first = false;
 			}
@@ -194,9 +195,7 @@ sf::Vector2i Map::generateMap(sf::Vector2i lowerLauncherPosition, float difficul
 
 	// Place down a bunch of enemies
 	for (int i = 0; i < MAP_SIZE.x * MAP_SIZE.y / 40 * enemyRate; i++) {
-		std::shared_ptr<Slime> slime = std::make_shared<Slime>(getEmptySpot());
-		slime->installBrain(std::make_shared<EnemyBrain>());
-		addEntity(slime);
+		spawnEnemy(false);
 	}
 
 	// Return the launcher position for use in the next floor's generation
@@ -361,4 +360,13 @@ void Map::createSplash(sf::Vector2f position, float radius, sf::Color color, flo
 		}
 		sounds.playSound("Impact", 100, -1);
 	}
+}
+
+void Map::spawnEnemy(bool plummet) {
+	std::shared_ptr<Slime> slime = std::make_shared<Slime>(getEmptySpot(), std::rand() % ((int)difficulty + 1), 1 + difficulty * 0.3);
+	slime->installBrain(std::make_shared<EnemyBrain>());
+	if (plummet) {
+		slime->plummet();
+	}
+	addEntity(slime);
 }
