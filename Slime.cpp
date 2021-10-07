@@ -12,11 +12,11 @@ Slime::Slime(sf::Vector2f position, int type, float powerMultiplier) {
 	size = sf::Vector2f(6, 6);
 	setMaxHealth(5);
 
-	if (type > 1) {
-		type = 1;
+	if (this->type > 1) {
+		this->type = 1;
 	}
 
-	if (type == 1) {
+	if (this->type == 1) {
 		sprite.setTexture(rm::loadTexture("Resource/Image/Bat.png"));
 		airAcceleration = 2;
 		moveSpeed = 35;

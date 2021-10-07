@@ -14,11 +14,11 @@ void initializeStats() {
 
 	stats["BulletCooldown"] = 0.25;
 	stats["BulletDamage"] = 3;
-	stats["BulletSpeed"] = 100;
+	stats["BulletSpeed"] = 110;
 	stats["BulletFlightTime"] = 0.2;
 	stats["BulletDeviation"] = 0.1;
 
-	stats["BombCooldown"] = 4;
+	stats["BombCooldown"] = 1.5;
 	stats["BombFuse"] = 2;
 	stats["BombDamage"] = 8;
 	stats["BombRadius"] = 30;

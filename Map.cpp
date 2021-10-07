@@ -20,8 +20,8 @@ void Map::update(sf::Time elapsed) {
 	if (spawnTimer >= spawnRate) {
 		spawnTimer = 0;
 		spawnRate -= 0.5;
-		if (spawnRate < 1) {
-			spawnRate = 1;
+		if (spawnRate < 6 - difficulty) {
+			spawnRate = 6 - difficulty;
 		}
 		spawnEnemy();
 	}
@@ -363,7 +363,7 @@ void Map::createSplash(sf::Vector2f position, float radius, sf::Color color, flo
 }
 
 void Map::spawnEnemy(bool plummet) {
-	std::shared_ptr<Slime> slime = std::make_shared<Slime>(getEmptySpot(), std::rand() % ((int)difficulty + 1), 1 + difficulty * 0.4);
+	std::shared_ptr<Slime> slime = std::make_shared<Slime>(getEmptySpot(), (std::rand() % ((int)difficulty + 1) + 3 <= 3 ? 0 : 1), 1 + difficulty * 0.1);
 	slime->installBrain(std::make_shared<EnemyBrain>());
 	if (plummet) {
 		slime->plummet();
